@@ -22,49 +22,49 @@ const footerLinks = {
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-muted/30">
-      <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 lg:gap-16">
+    <footer className="border-t border-neutral-800">
+      <div className="max-w-6xl mx-auto px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 lg:gap-16">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
-                <span className="text-xl font-bold text-white">AF</span>
+            <Link href="/" className="flex items-center gap-2.5 mb-5">
+              <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
+                <span className="text-xs font-bold text-black">AF</span>
               </div>
-              <span className="text-xl font-bold">Asset Forge</span>
+              <span className="text-sm font-semibold text-white tracking-tight">Asset Forge</span>
             </Link>
-            <p className="text-base text-muted-foreground leading-relaxed mb-6">
+            <p className="text-sm text-neutral-500 mb-6 leading-relaxed">
               The no-code platform for tokenizing real-world assets on Mantle.
             </p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
               <a
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 rounded-xl bg-muted hover:bg-muted/80 transition-colors"
+                className="p-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 transition-colors"
               >
-                <Github className="h-5 w-5 text-muted-foreground" />
+                <Github className="h-4 w-4 text-neutral-400" />
               </a>
               <a
                 href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 rounded-xl bg-muted hover:bg-muted/80 transition-colors"
+                className="p-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 transition-colors"
               >
-                <Twitter className="h-5 w-5 text-muted-foreground" />
+                <Twitter className="h-4 w-4 text-neutral-400" />
               </a>
             </div>
           </div>
 
           {/* Product Links */}
           <div>
-            <h4 className="text-base font-semibold mb-6">Product</h4>
-            <ul className="space-y-4">
+            <h4 className="text-xs font-medium text-neutral-400 uppercase tracking-wide mb-4">Product</h4>
+            <ul className="space-y-3">
               {footerLinks.product.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-base text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-sm text-neutral-500 hover:text-white transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -75,8 +75,8 @@ export function Footer() {
 
           {/* Resources Links */}
           <div>
-            <h4 className="text-base font-semibold mb-6">Resources</h4>
-            <ul className="space-y-4">
+            <h4 className="text-xs font-medium text-neutral-400 uppercase tracking-wide mb-4">Resources</h4>
+            <ul className="space-y-3">
               {footerLinks.resources.map((link) => (
                 <li key={link.name}>
                   {link.external ? (
@@ -84,15 +84,15 @@ export function Footer() {
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-base text-muted-foreground hover:text-foreground transition-colors"
+                      className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-white transition-colors"
                     >
                       {link.name}
-                      <ExternalLink className="h-4 w-4" />
+                      <ExternalLink className="h-3 w-3" />
                     </a>
                   ) : (
                     <Link
                       href={link.href}
-                      className="text-base text-muted-foreground hover:text-foreground transition-colors"
+                      className="text-sm text-neutral-500 hover:text-white transition-colors"
                     >
                       {link.name}
                     </Link>
@@ -104,13 +104,13 @@ export function Footer() {
 
           {/* Legal Links */}
           <div>
-            <h4 className="text-base font-semibold mb-6">Legal</h4>
-            <ul className="space-y-4">
+            <h4 className="text-xs font-medium text-neutral-400 uppercase tracking-wide mb-4">Legal</h4>
+            <ul className="space-y-3">
               {footerLinks.legal.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-base text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-sm text-neutral-500 hover:text-white transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -121,19 +121,19 @@ export function Footer() {
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-16 pt-10 border-t border-border">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-            <p className="text-base text-muted-foreground">
+        <div className="mt-12 pt-8 border-t border-neutral-800">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-neutral-500">
               © 2026 Asset Forge. All rights reserved.
             </p>
             <a
               href="https://mantle.xyz"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-base text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center gap-1.5 text-xs text-neutral-500 hover:text-white transition-colors"
             >
               <span>Powered by</span>
-              <span className="font-semibold">Mantle</span>
+              <span className="font-medium">Mantle</span>
             </a>
           </div>
         </div>

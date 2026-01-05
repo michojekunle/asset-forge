@@ -25,11 +25,11 @@ export function StepDetails({ formData, setFormData }: StepDetailsProps) {
     switch (formData.assetType) {
       case "real_estate":
         return (
-          <Card variant="glass" className="mt-8">
+          <Card variant="glass" className="mt-8 p-5">
             <CardHeader className="pb-4">
               <CardTitle className="text-xl">🏠 Real Estate Details</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 p-5">
               <Input
                 label="Property Address"
                 placeholder="123 Main Street, New York, NY 10001"
@@ -58,11 +58,11 @@ export function StepDetails({ formData, setFormData }: StepDetailsProps) {
 
       case "bond":
         return (
-          <Card variant="glass" className="mt-8">
+          <Card variant="glass" className="mt-8 p-5">
             <CardHeader className="pb-4">
               <CardTitle className="text-xl">📈 Bond Details</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 p-5">
               <div className="grid sm:grid-cols-2 gap-6">
                 <Input
                   label="Face Value (USD)"
@@ -95,11 +95,11 @@ export function StepDetails({ formData, setFormData }: StepDetailsProps) {
 
       case "invoice":
         return (
-          <Card variant="glass" className="mt-8">
+          <Card variant="glass" className="mt-8 p-5">
             <CardHeader className="pb-4">
               <CardTitle className="text-xl">📄 Invoice Details</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 ">
               <div className="grid sm:grid-cols-2 gap-6">
                 <Input
                   label="Invoice Number"
@@ -149,7 +149,7 @@ export function StepDetails({ formData, setFormData }: StepDetailsProps) {
       </div>
 
       {/* Common Fields */}
-      <Card variant="glass">
+      <Card variant="glass" className="p-5">
         <CardHeader className="pb-4">
           <CardTitle className="text-xl">Token Information</CardTitle>
         </CardHeader>

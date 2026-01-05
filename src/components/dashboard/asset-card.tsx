@@ -18,80 +18,67 @@ export function AssetCard({ asset, index = 0 }: AssetCardProps) {
   const assetTypeInfo = ASSET_TYPES[asset.assetType.toUpperCase() as keyof typeof ASSET_TYPES];
   const isTestnet = asset.chainId === 5003;
 
-  const getGradient = () => {
-    switch (asset.assetType) {
-      case "real_estate":
-        return "from-indigo-500 to-purple-500";
-      case "bond":
-        return "from-purple-500 to-pink-500";
-      case "invoice":
-        return "from-cyan-500 to-blue-500";
-      default:
-        return "from-green-500 to-emerald-500";
-    }
-  };
-
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05 }}
+      transition={{ delay: index * 0.05, duration: 0.4 }}
     >
-      <Card variant="glass" hover className="h-full flex flex-col p-0">
-        <CardContent className="p-10 flex-1">
+      <Card variant="default" hover className="h-full flex flex-col p-6">
+        <CardContent className="flex-1">
           {/* Header */}
-          <div className="flex items-start justify-between mb-8">
-            <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${getGradient()} flex items-center justify-center`}>
-              <span className="text-2xl">{assetTypeInfo?.icon || "🪙"}</span>
+          <div className="flex items-start justify-between mb-5">
+            <div className="w-11 h-11 rounded-xl bg-neutral-800 flex items-center justify-center">
+              <span className="text-lg">{assetTypeInfo?.icon || "🪙"}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Badge variant={isTestnet ? "warning" : "success"}>
-                {isTestnet ? "Testnet" : "Mainnet"}
-              </Badge>
-            </div>
+            <Badge variant={isTestnet ? "warning" : "success"}>
+              {isTestnet ? "Testnet" : "Mainnet"}
+            </Badge>
           </div>
 
           {/* Title & Symbol */}
-          <h3 className="text-xl font-bold mb-2 truncate">{asset.name}</h3>
-          <p className="text-base text-muted-foreground mb-6">${asset.symbol}</p>
+          <h3 className="text-base font-semibold text-white mb-1 truncate tracking-tight">
+            {asset.name}
+          </h3>
+          <p className="text-sm text-neutral-500 mb-5">${asset.symbol}</p>
 
           {/* Stats */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between text-base">
-              <span className="text-muted-foreground">Total Supply</span>
-              <span className="font-semibold">{formatNumber(parseFloat(asset.totalSupply))}</span>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-neutral-500">Total Supply</span>
+              <span className="font-medium text-white">{formatNumber(parseFloat(asset.totalSupply))}</span>
             </div>
-            <div className="flex items-center justify-between text-base">
-              <span className="text-muted-foreground">Type</span>
-              <Badge variant="secondary">{assetTypeInfo?.name || "Custom"}</Badge>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-neutral-500">Type</span>
+              <span className="text-neutral-300">{assetTypeInfo?.name || "Custom"}</span>
             </div>
-            <div className="flex items-center justify-between text-base">
-              <span className="text-muted-foreground">Contract</span>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-neutral-500">Contract</span>
               <a
                 href={getMantleExplorerUrl("address", asset.address, isTestnet)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-mono text-primary hover:underline flex items-center gap-2"
+                className="font-mono text-neutral-400 hover:text-white flex items-center gap-1.5 transition-colors"
               >
                 {formatAddress(asset.address)}
-                <ExternalLink className="h-4 w-4" />
+                <ExternalLink className="h-3 w-3" />
               </a>
             </div>
           </div>
         </CardContent>
 
-        <CardFooter className="border-t border-border p-6 mt-auto">
-          <div className="flex items-center gap-3 w-full">
+        <CardFooter className="border-t border-neutral-800 pt-5 mt-5">
+          <div className="flex items-center gap-2 w-full">
             <Link href={`/asset/${asset.address}`} className="flex-1">
-              <Button variant="secondary" size="lg" className="w-full">
+              <Button variant="secondary" size="sm" className="w-full">
                 View Details
               </Button>
             </Link>
-            <Button variant="ghost" size="icon" className="h-12 w-12">
-              <Share2 className="h-5 w-5" />
+            <Button variant="ghost" size="icon">
+              <Share2 className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="icon" className="h-12 w-12">
-              <MoreHorizontal className="h-5 w-5" />
+            <Button variant="ghost" size="icon">
+              <MoreHorizontal className="h-4 w-4" />
             </Button>
           </div>
         </CardFooter>

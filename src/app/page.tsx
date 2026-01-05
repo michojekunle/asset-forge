@@ -4,7 +4,6 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
-  Sparkles,
   Zap,
   Shield,
   Users,
@@ -12,8 +11,8 @@ import {
   FileText,
   Coins,
   Layers,
-  CheckCircle2,
   ExternalLink,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,7 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { ASSET_TYPES } from "@/lib/utils";
 
 const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
+  initial: { opacity: 0, y: 24 },
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.5 },
 };
@@ -39,51 +38,39 @@ const features = [
     icon: Sparkles,
     title: "No-Code Asset Creation",
     description: "Create tokenized assets with our intuitive wizard. No Solidity knowledge required.",
-    color: "text-indigo-400",
-    bgColor: "bg-indigo-500/10",
   },
   {
     icon: Zap,
     title: "One-Click Deployment",
     description: "Deploy your RWA token to Mantle with a single click. Fast, secure, and gas-efficient.",
-    color: "text-purple-400",
-    bgColor: "bg-purple-500/10",
   },
   {
     icon: Shield,
     title: "Audited Templates",
     description: "Built on battle-tested OpenZeppelin contracts with compliance features built-in.",
-    color: "text-cyan-400",
-    bgColor: "bg-cyan-500/10",
   },
   {
     icon: Users,
     title: "Community Showcase",
     description: "Share your assets, discover others, and build reputation in the RWA ecosystem.",
-    color: "text-green-400",
-    bgColor: "bg-green-500/10",
   },
 ];
 
 const assetTemplates = [
   {
     ...ASSET_TYPES.REAL_ESTATE,
-    gradient: "from-indigo-500 to-purple-500",
     Icon: Building2,
   },
   {
     ...ASSET_TYPES.BOND,
-    gradient: "from-purple-500 to-pink-500",
     Icon: Coins,
   },
   {
     ...ASSET_TYPES.INVOICE,
-    gradient: "from-cyan-500 to-blue-500",
     Icon: FileText,
   },
   {
     ...ASSET_TYPES.CUSTOM,
-    gradient: "from-green-500 to-emerald-500",
     Icon: Layers,
   },
 ];
@@ -106,15 +93,8 @@ export default function HomePage() {
   return (
     <div className="relative">
       {/* Hero Section */}
-      <section className="relative overflow-hidden min-h-[85vh] flex items-center">
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-20 left-1/4 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[140px] animate-pulse" />
-          <div className="absolute bottom-20 right-1/4 w-[350px] h-[350px] bg-purple-500/10 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: "1s" }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/5 rounded-full blur-[160px]" />
-        </div>
-
-        <div className="relative w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-16 py-24 lg:py-32">
+      <section className="relative min-h-[90vh] flex items-center pt-16">
+        <div className="relative w-full max-w-5xl mx-auto px-6 lg:px-8 py-24">
           <motion.div
             initial="initial"
             animate="animate"
@@ -123,8 +103,7 @@ export default function HomePage() {
           >
             {/* Badge */}
             <motion.div variants={fadeInUp} className="mb-8">
-              <Badge variant="default" className="px-5 py-2 text-sm">
-                <Sparkles className="h-4 w-4 mr-2" />
+              <Badge variant="default">
                 Built for Mantle Global Hackathon 2025
               </Badge>
             </motion.div>
@@ -132,36 +111,34 @@ export default function HomePage() {
             {/* Headline */}
             <motion.h1
               variants={fadeInUp}
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-10 leading-[1.15]"
+              className="text-5xl md:text-6xl lg:text-7xl font-semibold text-white mb-6 tracking-tight leading-[1.1]"
             >
-              Tokenize{" "}
-              <span className="gradient-text-animated">Real-World Assets</span>
+              Tokenize Real-World
               <br />
-              in Minutes
+              <span className="text-neutral-400">Assets in Minutes</span>
             </motion.h1>
 
             {/* Subheadline */}
             <motion.p
               variants={fadeInUp}
-              className="text-lg sm:text-xl text-muted-foreground/90 max-w-2xl mx-auto mb-16 leading-relaxed"
+              className="text-lg md:text-xl text-neutral-400 max-w-xl mx-auto mb-12 leading-relaxed"
             >
               The no-code platform for creating, deploying, and sharing tokenized assets on Mantle.
-              From real estate to invoices — bring any asset on-chain.
             </motion.p>
 
             {/* CTA Buttons */}
             <motion.div
               variants={fadeInUp}
-              className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-20"
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20"
             >
               <Link href="/create">
-                <Button variant="primary" size="xl" className="group text-lg px-10 py-4 h-auto">
+                <Button variant="primary" size="lg" className="group min-w-[180px]">
                   Start Creating
-                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </Button>
               </Link>
               <Link href="/showcase">
-                <Button variant="secondary" size="xl" className="text-lg px-10 py-4 h-auto">
+                <Button variant="secondary" size="lg" className="min-w-[180px]">
                   Explore Showcase
                 </Button>
               </Link>
@@ -170,15 +147,15 @@ export default function HomePage() {
             {/* Stats */}
             <motion.div
               variants={fadeInUp}
-              className="grid grid-cols-2 sm:grid-cols-4 gap-10 lg:gap-20 pt-16 border-t border-border/30"
+              className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-16 pt-12 border-t border-neutral-800"
             >
               {stats.map((stat) => (
                 <div key={stat.label} className="text-center">
-                  <div className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
+                  <div className="text-2xl md:text-3xl font-semibold text-white mb-1">
                     {stat.value}
-                    <span className="text-muted-foreground text-xl ml-1">{stat.suffix}</span>
+                    {stat.suffix && <span className="text-neutral-500 text-lg ml-1">{stat.suffix}</span>}
                   </div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                  <div className="text-xs text-neutral-500 uppercase tracking-wide">{stat.label}</div>
                 </div>
               ))}
             </motion.div>
@@ -187,42 +164,42 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-32 lg:py-48 bg-muted/30">
-        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-16">
+      <section className="py-24 lg:py-32">
+        <div className="max-w-5xl mx-auto px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-24"
+            transition={{ duration: 0.5 }}
+            className="text-center mb-16"
           >
-            <Badge variant="secondary" className="mb-8">Features</Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-8">
+            <Badge variant="default" className="mb-6">Features</Badge>
+            <h2 className="text-3xl md:text-4xl font-semibold text-white mb-4 tracking-tight">
               Everything you need to tokenize RWA
             </h2>
-            <p className="text-lg text-muted-foreground/90 max-w-2xl mx-auto leading-relaxed">
-              Our platform provides all the tools necessary to create, deploy, and manage
-              tokenized real-world assets without writing a single line of code.
+            <p className="text-neutral-400 max-w-lg mx-auto">
+              All the tools necessary to create, deploy, and manage tokenized real-world assets without writing code.
             </p>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 gap-10">
+          <div className="grid md:grid-cols-2 gap-5">
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
               >
-                <Card variant="glass" hover className="h-full p-8">
-                  <CardHeader className="p-0 pb-6">
-                    <div className={`w-16 h-16 rounded-2xl ${feature.bgColor} flex items-center justify-center mb-6`}>
-                      <feature.icon className={`h-8 w-8 ${feature.color}`} />
+                <Card variant="default" hover className="h-full p-7">
+                  <CardHeader className="p-0 pb-4">
+                    <div className="w-11 h-11 rounded-xl bg-neutral-800 flex items-center justify-center mb-4">
+                      <feature.icon className="h-5 w-5 text-neutral-400" />
                     </div>
-                    <CardTitle className="text-xl mb-3">{feature.title}</CardTitle>
+                    <CardTitle className="text-base">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="p-0">
-                    <CardDescription className="text-base leading-relaxed">{feature.description}</CardDescription>
+                    <CardDescription>{feature.description}</CardDescription>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -232,41 +209,41 @@ export default function HomePage() {
       </section>
 
       {/* Asset Templates Section */}
-      <section className="py-32 lg:py-48">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-16">
+      <section className="py-24 lg:py-32 bg-neutral-900/50">
+        <div className="max-w-5xl mx-auto px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-24"
+            transition={{ duration: 0.5 }}
+            className="text-center mb-16"
           >
-            <Badge variant="secondary" className="mb-8">Templates</Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-8">
+            <Badge variant="default" className="mb-6">Templates</Badge>
+            <h2 className="text-3xl md:text-4xl font-semibold text-white mb-4 tracking-tight">
               Pre-built templates for every asset type
             </h2>
-            <p className="text-lg text-muted-foreground/90 max-w-2xl mx-auto leading-relaxed">
-              Choose from our library of audited smart contract templates designed for
-              specific real-world asset classes.
+            <p className="text-neutral-400 max-w-lg mx-auto">
+              Choose from our library of audited smart contract templates designed for specific real-world asset classes.
             </p>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {assetTemplates.map((template, index) => (
               <motion.div
                 key={template.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
               >
                 <Link href={`/create?type=${template.id}`}>
-                  <Card variant="glass" hover className="h-full group p-6">
+                  <Card variant="default" hover className="h-full group p-6">
                     <CardContent className="p-0">
-                      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${template.gradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                        <template.Icon className="h-8 w-8 text-white" />
+                      <div className="w-11 h-11 rounded-xl bg-neutral-800 flex items-center justify-center mb-4 group-hover:bg-neutral-700 transition-colors">
+                        <template.Icon className="h-5 w-5 text-neutral-400" />
                       </div>
-                      <h3 className="text-lg font-semibold mb-3">{template.name}</h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">{template.description}</p>
+                      <h3 className="text-sm font-medium text-white mb-2">{template.name}</h3>
+                      <p className="text-xs text-neutral-500 leading-relaxed">{template.description}</p>
                     </CardContent>
                   </Card>
                 </Link>
@@ -277,47 +254,40 @@ export default function HomePage() {
       </section>
 
       {/* How it Works Section */}
-      <section className="py-32 lg:py-48 bg-muted/30">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-16">
+      <section className="py-24 lg:py-32">
+        <div className="max-w-5xl mx-auto px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-24"
+            transition={{ duration: 0.5 }}
+            className="text-center mb-16"
           >
-            <Badge variant="secondary" className="mb-8">How it Works</Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-8">
+            <Badge variant="default" className="mb-6">How it Works</Badge>
+            <h2 className="text-3xl md:text-4xl font-semibold text-white mb-4 tracking-tight">
               From idea to deployed token in 4 steps
             </h2>
-            <p className="text-lg text-muted-foreground/90 max-w-2xl mx-auto leading-relaxed">
-              Our streamlined process makes tokenization accessible to everyone,
-              regardless of technical background.
+            <p className="text-neutral-400 max-w-lg mx-auto">
+              Our streamlined process makes tokenization accessible to everyone.
             </p>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {steps.map((step, index) => (
               <motion.div
                 key={step.step}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="relative"
+                transition={{ delay: index * 0.1, duration: 0.5 }}
               >
-                {index < steps.length - 1 && (
-                  <div className="hidden lg:block absolute top-10 left-full w-full h-0.5 bg-gradient-to-r from-border to-transparent -ml-4" />
-                )}
-                <Card variant="default" className="h-full p-8">
+                <Card variant="default" className="h-full p-6">
                   <CardContent className="p-0">
-                    <div className="flex items-center gap-5 mb-6">
-                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
-                        {step.step}
-                      </div>
-                      <CheckCircle2 className="h-6 w-6 text-success ml-auto opacity-0" />
+                    <div className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center font-semibold text-sm mb-4">
+                      {step.step}
                     </div>
-                    <h3 className="text-xl font-semibold mb-3">{step.title}</h3>
-                    <p className="text-muted-foreground leading-relaxed">{step.description}</p>
+                    <h3 className="text-sm font-medium text-white mb-2">{step.title}</h3>
+                    <p className="text-xs text-neutral-500 leading-relaxed">{step.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -327,76 +297,70 @@ export default function HomePage() {
       </section>
 
       {/* Mantle Integration Section */}
-      <section className="py-32 lg:py-48">
-        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12">
+      <section className="py-24 lg:py-32 bg-neutral-900/50">
+        <div className="max-w-4xl mx-auto px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative"
+            transition={{ duration: 0.5 }}
           >
-            <Card variant="glow" className="overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-cyan-500/10" />
-              <CardContent className="relative py-20 lg:py-24 px-8 lg:px-16">
-                <div className="max-w-3xl mx-auto text-center">
-                  <Badge variant="accent" className="mb-8">Powered by Mantle</Badge>
-                  <h2 className="text-4xl sm:text-5xl font-bold mb-8">
-                    Built for the Future of Finance
-                  </h2>
-                  <p className="text-xl text-muted-foreground mb-12 leading-relaxed">
-                    Asset Forge leverages Mantle&apos;s high-performance Layer 2 network to provide
-                    lightning-fast transactions with minimal gas costs. The perfect infrastructure
-                    for tokenized real-world assets.
-                  </p>
-                  <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
-                    <a
-                      href="https://www.mantle.xyz"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Button variant="secondary" size="lg" className="text-base px-8">
-                        Learn About Mantle
-                        <ExternalLink className="h-4 w-4 ml-2" />
-                      </Button>
-                    </a>
-                    <a
-                      href="https://www.mantle.xyz/faucet"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Button variant="outline" size="lg" className="text-base px-8">
-                        Get Testnet Tokens
-                        <ExternalLink className="h-4 w-4 ml-2" />
-                      </Button>
-                    </a>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="bg-neutral-900 rounded-3xl py-16 px-8 text-center">
+              <Badge variant="default" className="mb-6">Powered by Mantle</Badge>
+              <h2 className="text-2xl md:text-3xl font-semibold text-white mb-4 tracking-tight">
+                Built for the Future of Finance
+              </h2>
+              <p className="text-neutral-400 mb-10 max-w-lg mx-auto">
+                Asset Forge leverages Mantle&apos;s high-performance Layer 2 network to provide
+                lightning-fast transactions with minimal gas costs.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <a
+                  href="https://www.mantle.xyz"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button variant="secondary" size="md">
+                    Learn About Mantle
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </Button>
+                </a>
+                <a
+                  href="https://www.mantle.xyz/faucet"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button variant="outline" size="md">
+                    Get Testnet Tokens
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </Button>
+                </a>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 lg:py-48 bg-muted/30">
-        <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12">
+      <section className="py-24 lg:py-32">
+        <div className="max-w-3xl mx-auto px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-8">
+            <h2 className="text-3xl md:text-4xl font-semibold text-white mb-4 tracking-tight">
               Ready to Create Your First Asset?
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed">
-              Join the future of tokenized real-world assets. Start building on Mantle today
-              with Asset Forge.
+            <p className="text-neutral-400 max-w-md mx-auto mb-10">
+              Join the future of tokenized real-world assets. Start building on Mantle today.
             </p>
             <Link href="/create">
-              <Button variant="primary" size="xl" className="group text-lg px-12 py-5 h-auto">
+              <Button variant="primary" size="xl" className="group">
                 Launch Asset Creator
-                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Button>
             </Link>
           </motion.div>

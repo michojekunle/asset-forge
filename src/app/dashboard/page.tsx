@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAccount } from "wagmi";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { Plus, Search, Grid, List, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -68,92 +69,107 @@ export default function DashboardPage() {
 
   if (!isConnected) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center px-6">
-        <Card variant="glass" className="max-w-lg mx-auto text-center">
-          <CardContent className="py-16 px-12">
-            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-8">
-              <Wallet className="h-10 w-10 text-primary" />
-            </div>
-            <h2 className="text-3xl font-bold mb-4">Connect Your Wallet</h2>
-            <p className="text-lg text-muted-foreground mb-10 leading-relaxed">
-              Connect your wallet to view your deployed assets and manage your portfolio.
-            </p>
-            <Button variant="primary" size="lg" className="px-10">
-              Connect Wallet
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen flex items-center justify-center px-6 pt-16">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Card variant="default" className="max-w-sm mx-auto text-center p-10">
+            <CardContent>
+              <div className="w-14 h-14 rounded-2xl bg-neutral-800 flex items-center justify-center mx-auto mb-6">
+                <Wallet className="h-7 w-7 text-neutral-400" />
+              </div>
+              <h2 className="text-xl font-semibold text-white mb-3 tracking-tight">Connect Your Wallet</h2>
+              <p className="text-sm text-neutral-400 mb-8 leading-relaxed">
+                Connect your wallet to view your deployed assets and manage your portfolio.
+              </p>
+              <Button variant="primary" size="lg" className="w-full">
+                Connect Wallet
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen pb-12">
-      <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+    <div className="min-h-screen pb-20 pt-24">
+      <div className="max-w-6xl mx-auto px-6 lg:px-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-12">
+        <motion.div 
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-12"
+        >
           <div>
-            <h1 className="text-4xl font-bold mb-2">My Assets</h1>
-            <p className="text-lg text-muted-foreground">
+            <h1 className="text-3xl font-semibold text-white mb-2 tracking-tight">My Assets</h1>
+            <p className="text-neutral-400">
               Manage your deployed RWA tokens on Mantle
             </p>
           </div>
           <Link href="/create">
-            <Button variant="primary" size="lg" className="px-8">
-              <Plus className="h-5 w-5 mr-2" />
+            <Button variant="primary" size="md">
+              <Plus className="h-4 w-4" />
               Create New Asset
             </Button>
           </Link>
-        </div>
+        </motion.div>
 
         {/* Stats Overview */}
-        <div className="grid sm:grid-cols-3 gap-6 mb-12">
-          <Card variant="default">
-            <CardContent className="py-8">
-              <p className="text-base text-muted-foreground mb-2">Total Assets</p>
-              <p className="text-4xl font-bold">{mockAssets.length}</p>
-            </CardContent>
-          </Card>
-          <Card variant="default">
-            <CardContent className="py-8">
-              <p className="text-base text-muted-foreground mb-2">Total Value Locked</p>
-              <p className="text-4xl font-bold">$1.55M</p>
-            </CardContent>
-          </Card>
-          <Card variant="default">
-            <CardContent className="py-8">
-              <p className="text-base text-muted-foreground mb-2">Network</p>
-              <div className="flex items-center gap-3 mt-1">
-                <span className="w-3 h-3 rounded-full bg-warning" />
-                <p className="text-xl font-semibold">Mantle Sepolia</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <motion.div 
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="grid md:grid-cols-3 gap-4 mb-12"
+        >
+          <div className="bg-neutral-900 rounded-2xl p-6">
+            <p className="text-xs text-neutral-500 uppercase tracking-wide mb-2">Total Assets</p>
+            <p className="text-3xl font-semibold text-white">{mockAssets.length}</p>
+          </div>
+          <div className="bg-neutral-900 rounded-2xl p-6">
+            <p className="text-xs text-neutral-500 uppercase tracking-wide mb-2">Total Value Locked</p>
+            <p className="text-3xl font-semibold text-white">$1.55M</p>
+          </div>
+          <div className="bg-neutral-900 rounded-2xl p-6">
+            <p className="text-xs text-neutral-500 uppercase tracking-wide mb-2">Network</p>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-yellow-500" />
+              <p className="text-lg font-medium text-white">Mantle Sepolia</p>
+            </div>
+          </div>
+        </motion.div>
 
         {/* Filters & Search */}
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-6 mb-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4 mb-8"
+        >
           <div className="relative flex-1">
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500" />
             <Input
               placeholder="Search assets..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-14"
+              className="pl-11"
             />
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {/* Type Filters */}
-            <div className="flex items-center gap-2 p-2 rounded-xl bg-muted">
+            <div className="flex items-center gap-2 p-1.5 rounded-full bg-neutral-900">
               {["all", "real_estate", "bond", "invoice"].map((type) => (
                 <button
                   key={type}
                   onClick={() => setFilterType(type === "all" ? null : type)}
                   className={cn(
-                    "px-5 py-3 rounded-lg text-base font-medium transition-colors",
+                    "px-4 py-2 rounded-full text-sm font-medium transition-all",
                     (type === "all" && !filterType) || filterType === type
-                      ? "bg-background text-foreground shadow"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "bg-white text-black"
+                      : "text-neutral-400 hover:text-white"
                   )}
                 >
                   {type === "all" ? "All" : type.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase())}
@@ -162,40 +178,40 @@ export default function DashboardPage() {
             </div>
 
             {/* View Mode */}
-            <div className="flex items-center gap-2 p-2 rounded-xl bg-muted">
+            <div className="flex items-center gap-1 p-1.5 rounded-xl bg-neutral-900">
               <button
                 onClick={() => setViewMode("grid")}
                 className={cn(
-                  "p-3 rounded-lg transition-colors",
+                  "p-2 rounded-lg transition-colors",
                   viewMode === "grid"
-                    ? "bg-background text-foreground shadow"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-white text-black"
+                    : "text-neutral-400 hover:text-white"
                 )}
               >
-                <Grid className="h-5 w-5" />
+                <Grid className="h-4 w-4" />
               </button>
               <button
                 onClick={() => setViewMode("list")}
                 className={cn(
-                  "p-3 rounded-lg transition-colors",
+                  "p-2 rounded-lg transition-colors",
                   viewMode === "list"
-                    ? "bg-background text-foreground shadow"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-white text-black"
+                    : "text-neutral-400 hover:text-white"
                 )}
               >
-                <List className="h-5 w-5" />
+                <List className="h-4 w-4" />
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Assets Grid */}
         {filteredAssets.length > 0 ? (
           <div
             className={cn(
               viewMode === "grid"
-                ? "grid sm:grid-cols-2 lg:grid-cols-3 gap-8"
-                : "space-y-6"
+                ? "grid md:grid-cols-2 lg:grid-cols-3 gap-5"
+                : "space-y-4"
             )}
           >
             {filteredAssets.map((asset, index) => (
@@ -203,18 +219,18 @@ export default function DashboardPage() {
             ))}
           </div>
         ) : (
-          <Card variant="glass" className="text-center py-20">
+          <Card variant="default" className="text-center py-16 px-8">
             <CardContent>
-              <div className="text-5xl mb-6">🔍</div>
-              <h3 className="text-2xl font-semibold mb-4">No assets found</h3>
-              <p className="text-lg text-muted-foreground mb-10">
+              <div className="text-4xl mb-4">🔍</div>
+              <h3 className="text-lg font-semibold text-white mb-2">No assets found</h3>
+              <p className="text-sm text-neutral-400 mb-8">
                 {searchQuery
                   ? "No assets match your search criteria"
                   : "You haven't created any assets yet"}
               </p>
               <Link href="/create">
-                <Button variant="primary" size="lg" className="px-10">
-                  <Plus className="h-5 w-5 mr-2" />
+                <Button variant="primary" size="md">
+                  <Plus className="h-4 w-4" />
                   Create Your First Asset
                 </Button>
               </Link>

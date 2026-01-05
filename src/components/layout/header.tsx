@@ -63,24 +63,24 @@ export function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50">
-      <nav className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-        <div className="flex items-center justify-between h-20 lg:h-24">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#0c0c0c]/90 backdrop-blur-lg border-b border-neutral-800/50 px-16">
+      <nav className="max-w-6xl mx-auto px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 flex-shrink-0">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
-              <span className="text-xl font-bold text-white">AF</span>
+            <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
+              <span className="text-xs font-bold text-black">AF</span>
             </div>
-            <span className="text-xl font-bold hidden sm:block">Asset Forge</span>
+            <span className="text-sm font-semibold text-white hidden sm:block tracking-tight">Asset Forge</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-10">
+          <div className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm text-neutral-400 hover:text-white transition-colors"
               >
                 {link.name}
               </Link>
@@ -88,90 +88,90 @@ export function Header() {
           </div>
 
           {/* Wallet Section */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {isConnected ? (
               <div className="relative">
                 <button
                   onClick={() => setWalletMenuOpen(!walletMenuOpen)}
-                  className="flex items-center gap-3 px-5 py-3 rounded-xl glass border border-border hover:border-primary/50 transition-colors"
+                  className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-neutral-900 border border-neutral-800 hover:border-neutral-700 transition-colors"
                 >
-                  {/* Network Status */}
                   <div className={cn(
-                    "w-3 h-3 rounded-full",
-                    isWrongNetwork ? "bg-error" : isTestnet ? "bg-warning" : "bg-success"
+                    "w-2 h-2 rounded-full",
+                    isWrongNetwork ? "bg-red-500" : isTestnet ? "bg-yellow-500" : "bg-green-500"
                   )} />
-                  <span className="text-base font-medium hidden sm:block">
+                  <span className="text-sm font-medium text-neutral-300 hidden sm:block">
                     {formatAddress(address || "")}
                   </span>
-                  <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                  <ChevronDown className="h-3.5 w-3.5 text-neutral-500" />
                 </button>
 
                 <AnimatePresence>
                   {walletMenuOpen && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute right-0 mt-3 w-80 py-3 rounded-2xl glass border border-border shadow-xl"
+                      initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 mt-2 w-72 py-2 rounded-2xl bg-neutral-900 border border-neutral-800 shadow-2xl"
                     >
                       {/* Address & Balance */}
-                      <div className="px-5 py-4 border-b border-border">
-                        <p className="text-sm text-muted-foreground mb-2">Connected Wallet</p>
-                        <p className="font-mono text-base font-medium mb-3">
+                      <div className="px-4 py-3 border-b border-neutral-800">
+                        <p className="text-xs text-neutral-500 mb-1.5 uppercase tracking-wide">Wallet</p>
+                        <p className="font-mono text-sm font-medium text-white mb-2">
                           {formatAddress(address || "", 8)}
                         </p>
                         {balance && (
-                          <p className="text-sm text-muted-foreground">
-                            Balance: {(Number(balance.value) / Math.pow(10, balance.decimals)).toFixed(4)} {balance.symbol}
+                          <p className="text-xs text-neutral-500">
+                            {(Number(balance.value) / Math.pow(10, balance.decimals)).toFixed(4)} {balance.symbol}
                           </p>
                         )}
                       </div>
 
                       {/* Network Info */}
-                      <div className="px-5 py-4 border-b border-border">
-                        <p className="text-sm text-muted-foreground mb-2">Network</p>
-                        <div className="flex items-center gap-3">
+                      <div className="px-4 py-3 border-b border-neutral-800">
+                        <p className="text-xs text-neutral-500 mb-1.5 uppercase tracking-wide">Network</p>
+                        <div className="flex items-center gap-2">
                           <div className={cn(
-                            "w-3 h-3 rounded-full",
-                            isTestnet ? "bg-warning" : "bg-success"
+                            "w-2 h-2 rounded-full",
+                            isTestnet ? "bg-yellow-500" : "bg-green-500"
                           )} />
-                          <span className="text-base font-medium">
+                          <span className="text-sm font-medium text-white">
                             {isTestnet ? "Mantle Sepolia" : "Mantle Mainnet"}
                           </span>
                         </div>
                       </div>
 
                       {/* Actions */}
-                      <div className="px-2 py-3">
+                      <div className="px-2 py-2">
                         <button
                           onClick={handleCopyAddress}
-                          className="w-full flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-muted transition-colors text-left"
+                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-800 transition-colors text-left"
                         >
                           {copied ? (
-                            <Check className="h-5 w-5 text-success" />
+                            <Check className="h-4 w-4 text-green-500" />
                           ) : (
-                            <Copy className="h-5 w-5 text-muted-foreground" />
+                            <Copy className="h-4 w-4 text-neutral-500" />
                           )}
-                          <span className="text-base">{copied ? "Copied!" : "Copy Address"}</span>
+                          <span className="text-sm text-neutral-300">{copied ? "Copied!" : "Copy Address"}</span>
                         </button>
                         <a
                           href={getMantleExplorerUrl("address", address || "", isTestnet)}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-full flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-muted transition-colors"
+                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-800 transition-colors"
                         >
-                          <ExternalLink className="h-5 w-5 text-muted-foreground" />
-                          <span className="text-base">View on Explorer</span>
+                          <ExternalLink className="h-4 w-4 text-neutral-500" />
+                          <span className="text-sm text-neutral-300">View on Explorer</span>
                         </a>
                         <button
                           onClick={() => {
                             disconnect();
                             setWalletMenuOpen(false);
                           }}
-                          className="w-full flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-muted transition-colors text-error"
+                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-800 transition-colors text-red-400"
                         >
-                          <LogOut className="h-5 w-5" />
-                          <span className="text-base">Disconnect</span>
+                          <LogOut className="h-4 w-4" />
+                          <span className="text-sm">Disconnect</span>
                         </button>
                       </div>
                     </motion.div>
@@ -182,47 +182,48 @@ export function Header() {
               <div className="relative">
                 <Button
                   variant="primary"
+                  size="sm"
                   onClick={() => setWalletMenuOpen(!walletMenuOpen)}
                   disabled={isPending}
                   isLoading={isPending}
-                  className="px-6 py-3 h-auto text-base"
                 >
-                  <Wallet className="h-5 w-5 mr-2" />
-                  Connect Wallet
+                  <Wallet className="h-4 w-4" />
+                  Connect
                 </Button>
 
                 <AnimatePresence>
                   {walletMenuOpen && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute right-0 mt-3 w-72 py-4 rounded-2xl glass border border-border shadow-xl"
+                      initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 mt-2 w-64 py-3 rounded-2xl bg-neutral-900 border border-neutral-800 shadow-2xl"
                     >
-                      <p className="px-5 pb-4 text-sm text-muted-foreground">Choose a wallet to connect</p>
-                      <div className="px-3 space-y-2">
+                      <p className="px-4 pb-3 text-xs text-neutral-500 uppercase tracking-wide">Connect Wallet</p>
+                      <div className="px-2 space-y-1">
                         <button
                           onClick={handleConnectInjected}
-                          className="w-full flex items-center gap-4 px-4 py-4 rounded-xl hover:bg-muted transition-colors text-left"
+                          className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-neutral-800 transition-colors text-left"
                         >
-                          <div className="w-11 h-11 rounded-xl bg-orange-500/10 flex items-center justify-center">
-                            <span className="text-2xl">🦊</span>
+                          <div className="w-9 h-9 rounded-xl bg-neutral-800 flex items-center justify-center">
+                            <span className="text-lg">🦊</span>
                           </div>
                           <div>
-                            <p className="font-semibold text-base">MetaMask</p>
-                            <p className="text-sm text-muted-foreground">Browser Extension</p>
+                            <p className="font-medium text-sm text-white">MetaMask</p>
+                            <p className="text-xs text-neutral-500">Browser Extension</p>
                           </div>
                         </button>
                         <button
                           onClick={handleConnectWalletConnect}
-                          className="w-full flex items-center gap-4 px-4 py-4 rounded-xl hover:bg-muted transition-colors text-left"
+                          className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-neutral-800 transition-colors text-left"
                         >
-                          <div className="w-11 h-11 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                            <span className="text-2xl">🔗</span>
+                          <div className="w-9 h-9 rounded-xl bg-neutral-800 flex items-center justify-center">
+                            <span className="text-lg">🔗</span>
                           </div>
                           <div>
-                            <p className="font-semibold text-base">WalletConnect</p>
-                            <p className="text-sm text-muted-foreground">Mobile & Desktop</p>
+                            <p className="font-medium text-sm text-white">WalletConnect</p>
+                            <p className="text-xs text-neutral-500">Mobile & Desktop</p>
                           </div>
                         </button>
                       </div>
@@ -235,12 +236,12 @@ export function Header() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-3 rounded-xl hover:bg-muted transition-colors"
+              className="lg:hidden p-2 rounded-lg hover:bg-neutral-800 transition-colors"
             >
               {mobileMenuOpen ? (
-                <X className="h-6 w-6" />
+                <X className="h-5 w-5 text-neutral-400" />
               ) : (
-                <Menu className="h-6 w-6" />
+                <Menu className="h-5 w-5 text-neutral-400" />
               )}
             </button>
           </div>
@@ -253,15 +254,15 @@ export function Header() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden border-t border-border overflow-hidden"
+              className="lg:hidden border-t border-neutral-800 overflow-hidden"
             >
-              <div className="py-6 space-y-2">
+              <div className="py-4 space-y-1">
                 {navLinks.map((link) => (
                   <Link
                     key={link.name}
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block px-5 py-4 rounded-xl text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    className="block px-4 py-3 rounded-xl text-sm font-medium text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
                   >
                     {link.name}
                   </Link>

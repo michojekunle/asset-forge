@@ -108,46 +108,54 @@ export default function ShowcasePage() {
   });
 
   return (
-    <div className="min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen pt-24 pb-20">
+      <div className="max-w-6xl mx-auto px-6 lg:px-8">
         {/* Hero */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
         >
-          <Badge variant="accent" className="mb-4">Community Showcase</Badge>
-          <h1 className="text-4xl sm:text-5xl font-bold mb-4">
-            Discover <span className="gradient-text">RWA Tokens</span>
+          <Badge variant="default" className="mb-6">Community Showcase</Badge>
+          <h1 className="text-4xl md:text-5xl font-semibold text-white mb-4 tracking-tight">
+            Discover RWA Tokens
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Explore tokenized real-world assets created by the community. Get inspired
-            and see what&apos;s possible with Asset Forge.
+          <p className="text-lg text-neutral-400 max-w-lg mx-auto leading-relaxed">
+            Explore tokenized real-world assets created by the community.
           </p>
         </motion.div>
 
         {/* Stats Bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16"
+        >
           {[
             { label: "Total Assets", value: showcaseAssets.length },
             { label: "Creators", value: "12" },
             { label: "Total Value", value: "$67.4M" },
             { label: "This Week", value: "+4" },
           ].map((stat) => (
-            <Card key={stat.label} variant="default">
-              <CardContent className="pt-4 pb-4 text-center">
-                <p className="text-2xl font-bold">{stat.value}</p>
-                <p className="text-xs text-muted-foreground">{stat.label}</p>
-              </CardContent>
-            </Card>
+            <div key={stat.label} className="bg-neutral-900 rounded-2xl p-6 text-center">
+              <p className="text-2xl font-semibold text-white mb-1">{stat.value}</p>
+              <p className="text-xs text-neutral-500 uppercase tracking-wide">{stat.label}</p>
+            </div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Filters */}
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4 mb-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4 mb-6"
+        >
           {/* Search */}
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500" />
             <Input
               placeholder="Search by name or symbol..."
               value={searchQuery}
@@ -163,10 +171,10 @@ export default function ShowcasePage() {
                 key={option.id}
                 onClick={() => setSortBy(option.id)}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                  "flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all",
                   sortBy === option.id
-                    ? "bg-primary text-white"
-                    : "bg-muted text-muted-foreground hover:text-foreground"
+                    ? "bg-white text-black"
+                    : "bg-neutral-900 text-neutral-400 hover:text-white"
                 )}
               >
                 <option.icon className="h-4 w-4" />
@@ -174,20 +182,25 @@ export default function ShowcasePage() {
               </button>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Type Filter Pills */}
-        <div className="flex items-center gap-2 mb-8 overflow-x-auto pb-2">
-          <Filter className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+        <motion.div 
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="flex items-center gap-3 mb-10 overflow-x-auto pb-2"
+        >
+          <Filter className="h-4 w-4 text-neutral-500 flex-shrink-0" />
           {["all", "real_estate", "bond", "invoice", "custom"].map((type) => (
             <button
               key={type}
               onClick={() => setFilterType(type === "all" ? null : type)}
               className={cn(
-                "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors",
+                "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all",
                 (type === "all" && !filterType) || filterType === type
-                  ? "bg-primary text-white"
-                  : "bg-muted text-muted-foreground hover:text-foreground"
+                  ? "bg-white text-black"
+                  : "bg-neutral-900 text-neutral-400 hover:text-white"
               )}
             >
               {type === "all"
@@ -195,21 +208,21 @@ export default function ShowcasePage() {
                 : type.replace("_", " ").replace(/\b\w/g, (l) => l.toUpperCase())}
             </button>
           ))}
-        </div>
+        </motion.div>
 
         {/* Assets Grid */}
         {filteredAssets.length > 0 ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredAssets.map((asset, index) => (
               <AssetCard key={asset.address} asset={asset} index={index} />
             ))}
           </div>
         ) : (
-          <Card variant="glass" className="text-center py-16">
+          <Card variant="default" className="text-center py-16 px-8">
             <CardContent>
               <div className="text-4xl mb-4">🔍</div>
-              <h3 className="text-xl font-semibold mb-2">No assets found</h3>
-              <p className="text-muted-foreground">
+              <h3 className="text-lg font-semibold text-white mb-2">No assets found</h3>
+              <p className="text-sm text-neutral-400">
                 Try adjusting your search or filters
               </p>
             </CardContent>
@@ -218,26 +231,25 @@ export default function ShowcasePage() {
 
         {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-16 text-center"
+          transition={{ duration: 0.5 }}
+          className="mt-20 text-center"
         >
-          <Card variant="glow" className="py-12">
-            <CardContent>
-              <h2 className="text-2xl font-bold mb-4">
-                Ready to Create Your Own Asset?
-              </h2>
-              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                Join the community and launch your tokenized real-world asset on Mantle.
-              </p>
-              <Link href="/create">
-                <Button variant="primary" size="lg">
-                  Start Creating
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+          <div className="bg-neutral-900 rounded-3xl py-16 px-8">
+            <h2 className="text-2xl md:text-3xl font-semibold text-white mb-4 tracking-tight">
+              Ready to Create Your Own Asset?
+            </h2>
+            <p className="text-neutral-400 mb-8 max-w-md mx-auto">
+              Join the community and launch your tokenized real-world asset on Mantle.
+            </p>
+            <Link href="/create">
+              <Button variant="primary" size="lg">
+                Start Creating
+              </Button>
+            </Link>
+          </div>
         </motion.div>
       </div>
     </div>
