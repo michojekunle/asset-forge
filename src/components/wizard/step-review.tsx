@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { AssetFormData } from "@/types/asset";
 import { ASSET_TYPES, getMantleExplorerUrl, formatAddress } from "@/lib/utils";
 import { mantleSepolia } from "@/config/wagmi";
+import { useAssetFactory } from "@/hooks/useAssetFactory";
 import {
   Rocket,
   AlertCircle,
@@ -26,10 +27,12 @@ interface StepReviewProps {
 export function StepReview({ formData }: StepReviewProps) {
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
-  const [isDeploying, setIsDeploying] = useState(false);
+  const { deployToken } = useAssetFactory();
+  
   const [deployedAddress, setDeployedAddress] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isDeploying, setIsDeploying] = useState(false);
 
   const isTestnet = chainId === mantleSepolia.id;
   const assetTypeInfo = ASSET_TYPES[formData.assetType.toUpperCase() as keyof typeof ASSET_TYPES];
@@ -44,16 +47,9 @@ export function StepReview({ formData }: StepReviewProps) {
     setError(null);
 
     try {
-      // Simulate deployment for demo purposes
-      // In production, this would call the actual contract deployment
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      
-      // Mock deployed address and tx hash
-      const mockAddress = "0x" + Math.random().toString(16).slice(2, 42).padEnd(40, "0");
-      const mockTxHash = "0x" + Math.random().toString(16).slice(2, 66).padEnd(64, "0");
-      
-      setDeployedAddress(mockAddress);
-      setTxHash(mockTxHash);
+      const result = await deployToken(formData);
+      setDeployedAddress(result.tokenAddress);
+      setTxHash(result.txHash);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Deployment failed");
     } finally {

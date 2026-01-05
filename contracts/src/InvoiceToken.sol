@@ -159,7 +159,13 @@ contract InvoiceToken is RWAToken {
 
     /**
      * @dev Get invoice information
-     * @return Full invoice details
+     * @return invoiceNumber_ Invoice number
+     * @return debtor_ Debtor name/ID
+     * @return invoiceAmount_ Invoice amount
+     * @return dueDate_ Due date timestamp
+     * @return discountedValue_ Discounted value
+     * @return status_ Invoice status
+     * @return isOverdue_ Whether invoice is overdue
      */
     function getInvoiceInfo()
         public

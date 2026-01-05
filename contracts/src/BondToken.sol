@@ -136,7 +136,13 @@ contract BondToken is RWAToken {
 
     /**
      * @dev Get bond information
-     * @return Full bond details
+     * @return faceValue_ Face value per token
+     * @return interestRateBps_ Interest rate in basis points
+     * @return maturityDate_ Maturity date timestamp
+     * @return issueDate_ Issue date timestamp
+     * @return couponFrequency_ Coupon payments per year
+     * @return isMatured_ Whether bond has matured
+     * @return couponAmountPerToken_ Coupon amount per token
      */
     function getBondInfo()
         public

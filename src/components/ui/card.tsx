@@ -18,7 +18,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
           {
             "bg-neutral-900": variant === "default",
             "bg-neutral-900/80 backdrop-blur-sm": variant === "glass",
-            "bg-neutral-900": variant === "gradient",
+            "bg-gradient-to-br from-neutral-900 to-neutral-800": variant === "gradient",
             "bg-neutral-900 ring-1 ring-neutral-800": variant === "glow",
           },
           hover && "hover:bg-neutral-800/80 hover:-translate-y-1 cursor-pointer",

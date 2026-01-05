@@ -105,7 +105,11 @@ contract RealEstateToken is RWAToken {
 
     /**
      * @dev Get property information
-     * @return Property address, type, appraisal value, and last appraisal date
+     * @return propertyAddress_ Property address
+     * @return propertyType_ Property type
+     * @return appraisalValue_ Appraisal value
+     * @return lastAppraisalDate_ Last appraisal date
+     * @return valuePerToken_ Value per token
      */
     function getPropertyInfo()
         public

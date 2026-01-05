@@ -17,20 +17,24 @@ contract RWAToken is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
     string public assetType;
     string public assetDescription;
     string public legalDocumentUri;
-    
+
     // Compliance settings
     bool public kycRequired;
     bool public accreditedOnly;
     bool public transferRestrictions;
-    
+
     // Decimals override
     uint8 private _decimals;
-    
+
     // Events
     event AssetMetadataUpdated(string assetType, string description);
-    event ComplianceUpdated(bool kycRequired, bool accreditedOnly, bool transferRestrictions);
+    event ComplianceUpdated(
+        bool kycRequired,
+        bool accreditedOnly,
+        bool transferRestrictions
+    );
     event YieldDistributed(uint256 amount, uint256 timestamp);
-    
+
     /**
      * @dev Constructor for RWAToken
      * @param name_ Token name
@@ -53,20 +57,20 @@ contract RWAToken is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
         _decimals = decimals_;
         assetType = assetType_;
         assetDescription = description_;
-        
+
         // Mint initial supply to owner
         if (initialSupply_ > 0) {
             _mint(owner_, initialSupply_);
         }
     }
-    
+
     /**
      * @dev Override decimals to use custom value
      */
     function decimals() public view virtual override returns (uint8) {
         return _decimals;
     }
-    
+
     /**
      * @dev Mint new tokens (only owner)
      * @param to Address to mint tokens to
@@ -75,21 +79,21 @@ contract RWAToken is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
     function mint(address to, uint256 amount) public onlyOwner {
         _mint(to, amount);
     }
-    
+
     /**
      * @dev Pause all token transfers (only owner)
      */
     function pause() public onlyOwner {
         _pause();
     }
-    
+
     /**
      * @dev Unpause token transfers (only owner)
      */
     function unpause() public onlyOwner {
         _unpause();
     }
-    
+
     /**
      * @dev Update asset metadata (only owner)
      * @param assetType_ New asset type
@@ -103,7 +107,7 @@ contract RWAToken is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
         assetDescription = description_;
         emit AssetMetadataUpdated(assetType_, description_);
     }
-    
+
     /**
      * @dev Update legal document URI (only owner)
      * @param uri_ URI to legal documents
@@ -111,7 +115,7 @@ contract RWAToken is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
     function setLegalDocumentUri(string memory uri_) public onlyOwner {
         legalDocumentUri = uri_;
     }
-    
+
     /**
      * @dev Update compliance settings (only owner)
      * @param kycRequired_ Whether KYC is required
@@ -126,9 +130,13 @@ contract RWAToken is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
         kycRequired = kycRequired_;
         accreditedOnly = accreditedOnly_;
         transferRestrictions = transferRestrictions_;
-        emit ComplianceUpdated(kycRequired_, accreditedOnly_, transferRestrictions_);
+        emit ComplianceUpdated(
+            kycRequired_,
+            accreditedOnly_,
+            transferRestrictions_
+        );
     }
-    
+
     /**
      * @dev Distribute yield to all token holders proportionally
      * @notice This is a simplified implementation. In production, consider using
@@ -140,7 +148,7 @@ contract RWAToken is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
         // Note: Actual distribution logic would be more complex
         // This serves as an event marker for off-chain processing
     }
-    
+
     /**
      * @dev Withdraw accumulated ETH (only owner)
      */
@@ -149,20 +157,30 @@ contract RWAToken is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
         require(balance > 0, "RWAToken: no balance to withdraw");
         payable(owner()).transfer(balance);
     }
-    
+
     /**
      * @dev Get comprehensive token info
-     * @return Token name, symbol, decimals, total supply, asset type, and compliance info
+     * @return name_ Token name
+     * @return symbol_ Token symbol
+     * @return decimals_ Token decimals
+     * @return totalSupply_ Total supply
+     * @return assetType_ Asset type
+     * @return kycRequired_ KYC required flag
+     * @return accreditedOnly_ Accredited only flag
      */
-    function getTokenInfo() public view returns (
-        string memory name_,
-        string memory symbol_,
-        uint8 decimals_,
-        uint256 totalSupply_,
-        string memory assetType_,
-        bool kycRequired_,
-        bool accreditedOnly_
-    ) {
+    function getTokenInfo()
+        public
+        view
+        returns (
+            string memory name_,
+            string memory symbol_,
+            uint8 decimals_,
+            uint256 totalSupply_,
+            string memory assetType_,
+            bool kycRequired_,
+            bool accreditedOnly_
+        )
+    {
         return (
             name(),
             symbol(),
@@ -173,7 +191,7 @@ contract RWAToken is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
             accreditedOnly
         );
     }
-    
+
     // Required overrides for ERC20Pausable
     function _update(
         address from,
@@ -182,7 +200,7 @@ contract RWAToken is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
     ) internal virtual override(ERC20, ERC20Pausable) {
         super._update(from, to, value);
     }
-    
+
     // Receive ETH for yield distribution
     receive() external payable {}
 }
