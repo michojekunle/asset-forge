@@ -15,9 +15,12 @@ contract RealEstateToken is RWAToken {
     uint256 public appraisalValue; // in USD cents (e.g., 100000000 = $1,000,000.00)
     uint256 public lastAppraisalDate;
 
-    // Rental yield tracking
-    uint256 public totalYieldDistributed;
-    uint256 public lastYieldDistributionDate;
+    // Dividend Tracking (Scalable Pull-based)
+    uint256 public accRewardPerShare;
+    mapping(address => uint256) public rewardDebt; // Reward debt (amount already accounted for)
+    mapping(address => uint256) public pendingRewards; // Unclaimed rewards
+
+    uint256 private constant MAGNITUDE = 1e18; // Precision factor
 
     // Events
     event PropertyUpdated(
@@ -26,10 +29,17 @@ contract RealEstateToken is RWAToken {
         uint256 appraisalValue
     );
     event AppraisalUpdated(uint256 newValue, uint256 timestamp);
-    event RentalYieldDistributed(uint256 amount, uint256 perTokenAmount);
+    event RentalReceived(uint256 amount);
+    event GlobalYieldDistributed(uint256 amount, uint256 newAccRewardPerShare);
+    event RewardClaimed(address indexed user, uint256 amount);
+
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
 
     /**
-     * @dev Constructor for RealEstateToken
+     * @dev Initializer for RealEstateToken
      * @param name_ Token name
      * @param symbol_ Token symbol
      * @param decimals_ Token decimals
@@ -39,7 +49,7 @@ contract RealEstateToken is RWAToken {
      * @param propertyType_ Type of property
      * @param appraisalValue_ Appraised value in USD cents
      */
-    constructor(
+    function initialize(
         string memory name_,
         string memory symbol_,
         uint8 decimals_,
@@ -48,8 +58,9 @@ contract RealEstateToken is RWAToken {
         string memory propertyAddress_,
         string memory propertyType_,
         uint256 appraisalValue_
-    )
-        RWAToken(
+    ) public initializer {
+        // Initialize parent contract
+        RWAToken.initialize(
             name_,
             symbol_,
             decimals_,
@@ -62,8 +73,8 @@ contract RealEstateToken is RWAToken {
                     propertyAddress_
                 )
             )
-        )
-    {
+        );
+
         propertyAddress = propertyAddress_;
         propertyType = propertyType_;
         appraisalValue = appraisalValue_;
@@ -129,5 +140,98 @@ contract RealEstateToken is RWAToken {
             lastAppraisalDate,
             valuePerToken()
         );
+    }
+
+    /**
+     * @dev Deposit rental income (ETH/MNT) to be distributed to holders
+     */
+    function depositRent() external payable onlyOwner {
+        require(
+            totalSupply() > 0,
+            "RealEstateToken: No tokens to distribute to"
+        );
+        require(msg.value > 0, "RealEstateToken: No rent deposited");
+
+        // Calculate reward per share increase
+        uint256 rewardAdded = (msg.value * MAGNITUDE) / totalSupply();
+        accRewardPerShare += rewardAdded;
+
+        emit RentalReceived(msg.value);
+        emit GlobalYieldDistributed(msg.value, accRewardPerShare);
+    }
+
+    /**
+     * @dev Claim accumulated rental yields
+     */
+    function claimReward() external {
+        _distributePending(msg.sender);
+        // Reset debt based on current balance
+        rewardDebt[msg.sender] =
+            (balanceOf(msg.sender) * accRewardPerShare) /
+            MAGNITUDE;
+
+        uint256 reward = pendingRewards[msg.sender];
+        require(reward > 0, "RealEstateToken: no reward to claim");
+
+        pendingRewards[msg.sender] = 0;
+        payable(msg.sender).transfer(reward);
+
+        emit RewardClaimed(msg.sender, reward);
+    }
+
+    /**
+     * @dev View function to see pending rewards
+     */
+    function viewPendingReward(address user) external view returns (uint256) {
+        uint256 pending = pendingRewards[user];
+        uint256 balance = balanceOf(user);
+
+        if (balance == 0) return pending;
+
+        uint256 tentativePending = (balance * accRewardPerShare) /
+            MAGNITUDE -
+            rewardDebt[user];
+        return pending + tentativePending;
+    }
+
+    /**
+     * @dev Override _update to sync rewards before balance changes
+     */
+    function _update(
+        address from,
+        address to,
+        uint256 value
+    ) internal virtual override {
+        // 1. Snapshot rewards before balance change
+        if (from != address(0)) {
+            _distributePending(from);
+        }
+        if (to != address(0)) {
+            _distributePending(to);
+        }
+
+        // 2. Perform transfer
+        super._update(from, to, value);
+
+        // 3. Reset debt based on NEW balance
+        if (from != address(0)) {
+            rewardDebt[from] =
+                (balanceOf(from) * accRewardPerShare) /
+                MAGNITUDE;
+        }
+        if (to != address(0)) {
+            rewardDebt[to] = (balanceOf(to) * accRewardPerShare) / MAGNITUDE;
+        }
+    }
+
+    function _distributePending(address user) internal {
+        uint256 balance = balanceOf(user);
+        if (balance > 0) {
+            uint256 accumulated = (balance * accRewardPerShare) / MAGNITUDE;
+            uint256 pending = accumulated - rewardDebt[user];
+            if (pending > 0) {
+                pendingRewards[user] += pending;
+            }
+        }
     }
 }

@@ -42,8 +42,13 @@ contract InvoiceToken is RWAToken {
     event InvoiceDefaulted(uint256 dueDate, uint256 timestamp);
     event StatusUpdated(InvoiceStatus oldStatus, InvoiceStatus newStatus);
 
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
     /**
-     * @dev Constructor for InvoiceToken
+     * @dev Initializer for InvoiceToken
      * @param name_ Token name
      * @param symbol_ Token symbol
      * @param decimals_ Token decimals
@@ -55,7 +60,7 @@ contract InvoiceToken is RWAToken {
      * @param dueDate_ Unix timestamp when payment is due
      * @param discountRateBps_ Discount rate for early payment
      */
-    constructor(
+    function initialize(
         string memory name_,
         string memory symbol_,
         uint8 decimals_,
@@ -66,8 +71,9 @@ contract InvoiceToken is RWAToken {
         uint256 invoiceAmount_,
         uint256 dueDate_,
         uint256 discountRateBps_
-    )
-        RWAToken(
+    ) public initializer {
+        // Initialize parent contract
+        RWAToken.initialize(
             name_,
             symbol_,
             decimals_,
@@ -75,8 +81,8 @@ contract InvoiceToken is RWAToken {
             owner_,
             "invoice",
             string(abi.encodePacked("Invoice token for ", invoiceNumber_))
-        )
-    {
+        );
+
         require(
             dueDate_ > block.timestamp,
             "InvoiceToken: due date must be in future"

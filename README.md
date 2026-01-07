@@ -45,7 +45,35 @@ Creating tokenized real-world assets (RWAs) requires deep blockchain expertise, 
 
 **Network:**
 - Mantle Sepolia (Testnet)
-- Mantle Mainnet
+
+## 📁 Project Structure
+
+```
+asset-forge/
+├── frontend/                # Next.js application
+│   ├── src/
+│   │   ├── app/             # App router pages
+│   │   ├── components/      # React components
+│   │   ├── config/          # wagmi and network config
+│   │   ├── contracts/       # Contract ABIs
+│   │   ├── hooks/           # Custom React hooks
+│   │   ├── lib/             # Utility functions
+│   │   └── types/           # TypeScript types
+│   └── package.json
+├── contracts/               # Hardhat project
+│   ├── src/                 # Solidity contracts
+│   │   ├── RWAToken.sol     # Base RWA template
+│   │   ├── RealEstateToken.sol
+│   │   ├── BondToken.sol
+│   │   ├── InvoiceToken.sol
+│   │   └── AssetFactory.sol # Factory for deployment
+│   ├── test/                # Contract tests
+│   ├── scripts/             # Deployment scripts
+│   └── package.json
+├── docs/                    # Documentation
+├── package.json             # Root workspace config
+└── README.md
+```
 
 ## 🚀 Quick Start
 
@@ -53,32 +81,36 @@ Creating tokenized real-world assets (RWAs) requires deep blockchain expertise, 
 
 - Node.js v18+
 - MetaMask or compatible wallet
-- Mantle Sepolia testnet ETH ([Get from faucet](https://www.mantle.xyz/faucet))
+- Mantle Sepolia testnet MNT ([Get from faucet](https://www.mantle.xyz/faucet))
 
-### Frontend Setup
+### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/asset-forge.git
+git clone https://github.com/michojekunle/asset-forge.git
 cd asset-forge
 
-# Install dependencies
-npm install
+# Install all dependencies
+npm run install:all
 
-# Start development server
+# Or install separately
+cd contracts && npm install
+cd ../frontend && npm install
+```
+
+### Run Frontend
+
+```bash
+cd frontend
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Smart Contract Setup
+### Smart Contract Development
 
 ```bash
-# Navigate to contracts directory
 cd contracts
-
-# Install dependencies
-npm install
 
 # Compile contracts
 npm run compile
@@ -88,37 +120,6 @@ npm run test
 
 # Deploy to Mantle Sepolia
 npm run deploy:sepolia
-```
-
-## 📁 Project Structure
-
-```
-asset-forge/
-├── src/
-│   ├── app/                 # Next.js app router pages
-│   │   ├── create/          # Asset creation wizard
-│   │   ├── dashboard/       # User dashboard
-│   │   ├── showcase/        # Community showcase
-│   │   └── page.tsx         # Landing page
-│   ├── components/
-│   │   ├── ui/              # Reusable UI components
-│   │   ├── wizard/          # Creation wizard steps
-│   │   ├── dashboard/       # Dashboard components
-│   │   └── layout/          # Header, Footer, Providers
-│   ├── config/              # wagmi and network config
-│   ├── hooks/               # Custom React hooks
-│   ├── lib/                 # Utility functions
-│   └── types/               # TypeScript types
-├── contracts/
-│   ├── src/                 # Solidity contracts
-│   │   ├── RWAToken.sol     # Base RWA template
-│   │   ├── RealEstateToken.sol
-│   │   ├── BondToken.sol
-│   │   ├── InvoiceToken.sol
-│   │   └── AssetFactory.sol # Factory for deployment
-│   ├── scripts/             # Deployment scripts
-│   └── test/                # Contract tests
-└── docs/                    # Documentation
 ```
 
 ## 📋 Smart Contract Templates
@@ -152,14 +153,14 @@ Receivables financing with:
 
 ## 🔧 Environment Variables
 
-Create a `.env.local` file in the root:
+### Frontend (.env.local in `/frontend`)
 
 ```env
 # WalletConnect Project ID
 NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_project_id
 ```
 
-For contracts, create `.env` in `/contracts`:
+### Contracts (.env in `/contracts`)
 
 ```env
 PRIVATE_KEY=your_private_key
@@ -170,21 +171,26 @@ MANTLESCAN_API_KEY=your_api_key
 
 - [Setup Guide](docs/SETUP.md) - Detailed installation instructions
 - [User Guide](docs/USER_GUIDE.md) - How to use the platform
-- [API Reference](docs/API.md) - Smart contract documentation
+- [Research](docs/RESEARCH.md) - RWA standards and design decisions
 
-## 🎥 Demo
+## 🧪 Testing
 
-[Watch Demo Video](https://youtube.com/your-demo-link)
+```bash
+cd contracts
+npm run test
+```
 
-## 🌐 Links
+All contracts have comprehensive test coverage including:
+- Deployment tests
+- Functionality tests
+- Edge case handling
+- Event emission verification
 
-- **Live Demo:** [asset-forge.vercel.app](https://asset-forge.vercel.app)
-- **Testnet:** [Mantle Sepolia](https://sepolia.mantlescan.xyz)
-- **Hackathon:** [Mantle Global Hackathon 2025](https://www.hackquest.io/hackathons/Mantle-Global-Hackathon-2025)
+## 🌐 Deployed Contracts (Mantle Sepolia)
 
-## 🤝 Contributing
-
-Contributions are welcome! Please read our contributing guidelines before submitting PRs.
+| Contract | Address |
+|----------|---------|
+| AssetFactory | `TBD - Run npm run deploy:sepolia` |
 
 ## 📄 License
 

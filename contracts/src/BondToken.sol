@@ -29,8 +29,13 @@ contract BondToken is RWAToken {
     event BondMatured(uint256 maturityDate);
     event PrincipalRepaid(uint256 amount, uint256 repaymentDate);
 
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
     /**
-     * @dev Constructor for BondToken
+     * @dev Initializer for BondToken
      * @param name_ Token name
      * @param symbol_ Token symbol
      * @param decimals_ Token decimals
@@ -41,7 +46,7 @@ contract BondToken is RWAToken {
      * @param maturityDate_ Unix timestamp when bond matures
      * @param couponFrequency_ Number of coupon payments per year
      */
-    constructor(
+    function initialize(
         string memory name_,
         string memory symbol_,
         uint8 decimals_,
@@ -51,8 +56,9 @@ contract BondToken is RWAToken {
         uint256 interestRateBps_,
         uint256 maturityDate_,
         uint256 couponFrequency_
-    )
-        RWAToken(
+    ) public initializer {
+        // Initialize parent contract
+        RWAToken.initialize(
             name_,
             symbol_,
             decimals_,
@@ -60,8 +66,8 @@ contract BondToken is RWAToken {
             owner_,
             "bond",
             "Fixed-income bond token with scheduled coupon payments"
-        )
-    {
+        );
+
         require(
             maturityDate_ > block.timestamp,
             "BondToken: maturity must be in future"

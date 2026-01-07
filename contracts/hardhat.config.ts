@@ -20,6 +20,7 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       chainId: 31337,
+      allowUnlimitedContractSize: true,
     },
     mantleSepolia: {
       url: "https://rpc.sepolia.mantle.xyz",

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+import "@openzeppelin/contracts/proxy/Clones.sol";
 import "./RWAToken.sol";
 import "./RealEstateToken.sol";
 import "./BondToken.sol";
@@ -8,10 +9,16 @@ import "./InvoiceToken.sol";
 
 /**
  * @title AssetFactory
- * @dev Factory contract for deploying RWA tokens on Mantle
- * @notice Central registry for all deployed assets
+ * @dev Factory contract for deploying RWA tokens on Mantle using Minimal Proxies (Clones)
+ * @notice Central registry for all deployed assets. Uses EIP-1167 to reduce gas costs.
  */
 contract AssetFactory {
+    // Immutable implementation addresses
+    address public immutable rwaTokenImplementation;
+    address public immutable realEstateTokenImplementation;
+    address public immutable bondTokenImplementation;
+    address public immutable invoiceTokenImplementation;
+
     // Deployed asset tracking
     address[] public deployedAssets;
     mapping(address => address[]) public assetsByCreator;
@@ -31,14 +38,34 @@ contract AssetFactory {
     );
 
     /**
-     * @dev Deploy a basic RWA token
-     * @param name Token name
-     * @param symbol Token symbol
-     * @param decimals Token decimals
-     * @param initialSupply Initial supply
-     * @param assetType Type of asset
-     * @param description Asset description
-     * @return Address of deployed token
+     * @dev Constructor accepts pre-deployed implementation addresses
+     * @param _rwaTokenImpl Address of deployed RWAToken implementation
+     * @param _realEstateTokenImpl Address of deployed RealEstateToken implementation
+     * @param _bondTokenImpl Address of deployed BondToken implementation
+     * @param _invoiceTokenImpl Address of deployed InvoiceToken implementation
+     */
+    constructor(
+        address _rwaTokenImpl,
+        address _realEstateTokenImpl,
+        address _bondTokenImpl,
+        address _invoiceTokenImpl
+    ) {
+        require(_rwaTokenImpl != address(0), "Invalid RWAToken impl");
+        require(
+            _realEstateTokenImpl != address(0),
+            "Invalid RealEstateToken impl"
+        );
+        require(_bondTokenImpl != address(0), "Invalid BondToken impl");
+        require(_invoiceTokenImpl != address(0), "Invalid InvoiceToken impl");
+
+        rwaTokenImplementation = _rwaTokenImpl;
+        realEstateTokenImplementation = _realEstateTokenImpl;
+        bondTokenImplementation = _bondTokenImpl;
+        invoiceTokenImplementation = _invoiceTokenImpl;
+    }
+
+    /**
+     * @dev Deploy a basic RWA token clone
      */
     function deployRWAToken(
         string memory name,
@@ -48,7 +75,8 @@ contract AssetFactory {
         string memory assetType,
         string memory description
     ) external returns (address) {
-        RWAToken token = new RWAToken(
+        address clone = Clones.clone(rwaTokenImplementation);
+        RWAToken(payable(clone)).initialize(
             name,
             symbol,
             decimals,
@@ -58,22 +86,12 @@ contract AssetFactory {
             description
         );
 
-        address tokenAddress = address(token);
-        _registerAsset(tokenAddress, msg.sender, "custom", name, symbol);
-
-        return tokenAddress;
+        _registerAsset(clone, msg.sender, "custom", name, symbol);
+        return clone;
     }
 
     /**
-     * @dev Deploy a real estate token
-     * @param name Token name
-     * @param symbol Token symbol
-     * @param decimals Token decimals
-     * @param initialSupply Initial supply
-     * @param propertyAddress Physical property address
-     * @param propertyType Type of property
-     * @param appraisalValue Appraised value in USD cents
-     * @return Address of deployed token
+     * @dev Deploy a real estate token clone
      */
     function deployRealEstateToken(
         string memory name,
@@ -84,7 +102,8 @@ contract AssetFactory {
         string memory propertyType,
         uint256 appraisalValue
     ) external returns (address) {
-        RealEstateToken token = new RealEstateToken(
+        address clone = Clones.clone(realEstateTokenImplementation);
+        RealEstateToken(payable(clone)).initialize(
             name,
             symbol,
             decimals,
@@ -95,23 +114,12 @@ contract AssetFactory {
             appraisalValue
         );
 
-        address tokenAddress = address(token);
-        _registerAsset(tokenAddress, msg.sender, "real_estate", name, symbol);
-
-        return tokenAddress;
+        _registerAsset(clone, msg.sender, "real_estate", name, symbol);
+        return clone;
     }
 
     /**
-     * @dev Deploy a bond token
-     * @param name Token name
-     * @param symbol Token symbol
-     * @param decimals Token decimals
-     * @param initialSupply Initial supply
-     * @param faceValue Face value per token
-     * @param interestRateBps Annual interest rate in basis points
-     * @param maturityDate Unix timestamp of maturity
-     * @param couponFrequency Number of coupon payments per year
-     * @return Address of deployed token
+     * @dev Deploy a bond token clone
      */
     function deployBondToken(
         string memory name,
@@ -123,7 +131,8 @@ contract AssetFactory {
         uint256 maturityDate,
         uint256 couponFrequency
     ) external returns (address) {
-        BondToken token = new BondToken(
+        address clone = Clones.clone(bondTokenImplementation);
+        BondToken(payable(clone)).initialize(
             name,
             symbol,
             decimals,
@@ -135,24 +144,12 @@ contract AssetFactory {
             couponFrequency
         );
 
-        address tokenAddress = address(token);
-        _registerAsset(tokenAddress, msg.sender, "bond", name, symbol);
-
-        return tokenAddress;
+        _registerAsset(clone, msg.sender, "bond", name, symbol);
+        return clone;
     }
 
     /**
-     * @dev Deploy an invoice token
-     * @param name Token name
-     * @param symbol Token symbol
-     * @param decimals Token decimals
-     * @param initialSupply Initial supply
-     * @param invoiceNumber Invoice identifier
-     * @param debtor Debtor name/ID
-     * @param invoiceAmount Invoice amount in USD cents
-     * @param dueDate Due date timestamp
-     * @param discountRateBps Discount rate in basis points
-     * @return Address of deployed token
+     * @dev Deploy an invoice token clone
      */
     function deployInvoiceToken(
         string memory name,
@@ -165,7 +162,8 @@ contract AssetFactory {
         uint256 dueDate,
         uint256 discountRateBps
     ) external returns (address) {
-        InvoiceToken token = new InvoiceToken(
+        address clone = Clones.clone(invoiceTokenImplementation);
+        InvoiceToken(payable(clone)).initialize(
             name,
             symbol,
             decimals,
@@ -178,10 +176,8 @@ contract AssetFactory {
             discountRateBps
         );
 
-        address tokenAddress = address(token);
-        _registerAsset(tokenAddress, msg.sender, "invoice", name, symbol);
-
-        return tokenAddress;
+        _registerAsset(clone, msg.sender, "invoice", name, symbol);
+        return clone;
     }
 
     /**
@@ -211,7 +207,6 @@ contract AssetFactory {
 
     /**
      * @dev Get all deployed assets
-     * @return Array of asset addresses
      */
     function getAllAssets() external view returns (address[] memory) {
         return deployedAssets;
@@ -219,8 +214,6 @@ contract AssetFactory {
 
     /**
      * @dev Get assets by creator
-     * @param creator Creator address
-     * @return Array of asset addresses
      */
     function getAssetsByCreator(
         address creator
@@ -230,8 +223,6 @@ contract AssetFactory {
 
     /**
      * @dev Get asset type
-     * @param asset Asset address
-     * @return Asset type string
      */
     function getAssetType(address asset) external view returns (string memory) {
         return assetTypes[asset];
@@ -239,7 +230,6 @@ contract AssetFactory {
 
     /**
      * @dev Get total number of assets deployed
-     * @return Count of deployed assets
      */
     function getAssetCount() external view returns (uint256) {
         return totalAssetsDeployed;

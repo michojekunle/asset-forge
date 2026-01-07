@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 /**
  * @title RWAToken
@@ -12,7 +13,13 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * @notice This contract provides a foundation for tokenizing real-world assets
  * with compliance features, yield distribution, and admin controls.
  */
-contract RWAToken is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
+contract RWAToken is
+    Initializable,
+    ERC20Upgradeable,
+    ERC20BurnableUpgradeable,
+    ERC20PausableUpgradeable,
+    OwnableUpgradeable
+{
     // Asset metadata
     string public assetType;
     string public assetDescription;
@@ -35,8 +42,13 @@ contract RWAToken is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
     );
     event YieldDistributed(uint256 amount, uint256 timestamp);
 
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
     /**
-     * @dev Constructor for RWAToken
+     * @dev Initializer for RWAToken
      * @param name_ Token name
      * @param symbol_ Token symbol
      * @param decimals_ Token decimals (usually 18)
@@ -45,7 +57,7 @@ contract RWAToken is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
      * @param assetType_ Type of real-world asset (e.g., "real_estate", "bond", "invoice")
      * @param description_ Brief description of the asset
      */
-    constructor(
+    function initialize(
         string memory name_,
         string memory symbol_,
         uint8 decimals_,
@@ -53,7 +65,12 @@ contract RWAToken is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
         address owner_,
         string memory assetType_,
         string memory description_
-    ) ERC20(name_, symbol_) Ownable(owner_) {
+    ) public initializer {
+        __ERC20_init(name_, symbol_);
+        __ERC20Burnable_init();
+        __ERC20Pausable_init();
+        __Ownable_init(owner_);
+
         _decimals = decimals_;
         assetType = assetType_;
         assetDescription = description_;
@@ -192,12 +209,63 @@ contract RWAToken is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
         );
     }
 
-    // Required overrides for ERC20Pausable
+    // Whitelist for KYC
+    mapping(address => bool) public isWhitelisted;
+
+    event WhitelistUpdated(address indexed account, bool status);
+
+    /**
+     * @dev Update whitelist status for an address (only owner)
+     * @param account Address to update
+     * @param status True if whitelisted, false otherwise
+     */
+    function updateWhitelist(address account, bool status) public onlyOwner {
+        isWhitelisted[account] = status;
+        emit WhitelistUpdated(account, status);
+    }
+
+    /**
+     * @dev Bulk update whitelist (only owner)
+     */
+    function bulkUpdateWhitelist(
+        address[] memory accounts,
+        bool status
+    ) public onlyOwner {
+        for (uint256 i = 0; i < accounts.length; i++) {
+            isWhitelisted[accounts[i]] = status;
+            emit WhitelistUpdated(accounts[i], status);
+        }
+    }
+
+    // Required overrides for ERC20Pausable with Compliance Logic
     function _update(
         address from,
         address to,
         uint256 value
-    ) internal virtual override(ERC20, ERC20Pausable) {
+    ) internal virtual override(ERC20Upgradeable, ERC20PausableUpgradeable) {
+        // Enforce KYC Compliance
+        if (kycRequired) {
+            // Allow minting (from 0x0) and burning (to 0x0) regardless, or check whitelist for holder
+            if (from != address(0) && to != address(0)) {
+                require(
+                    isWhitelisted[from],
+                    "RWAToken: sender not whitelisted"
+                );
+                require(
+                    isWhitelisted[to],
+                    "RWAToken: recipient not whitelisted"
+                );
+            } else if (to != address(0)) {
+                // Minting: Recipient must be whitelisted
+                require(
+                    isWhitelisted[to],
+                    "RWAToken: recipient not whitelisted"
+                );
+            }
+            // Burning usually allowed even if not whitelisted (exit right), but strict KYC might block it.
+            // We'll allow burning for now.
+        }
+
         super._update(from, to, value);
     }
 
