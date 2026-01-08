@@ -42,7 +42,7 @@ export function StepTokenomics({ formData, setFormData }: StepTokenomicsProps) {
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Left Column: Supply */}
-        <Card variant="glass" className="border-white/5 bg-white/[0.02] h-full">
+        <Card variant="glass" className="border-white/5 bg-white/[0.02] h-full p-5">
           <CardHeader className="pb-6 border-b border-white/5">
             <CardTitle className="text-xl flex items-center gap-2">
               <span className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-500 text-sm">02</span>
@@ -102,7 +102,7 @@ export function StepTokenomics({ formData, setFormData }: StepTokenomicsProps) {
         </Card>
 
         {/* Right Column: Features */}
-        <Card variant="glass" className="border-white/5 bg-white/[0.02] h-full">
+        <Card variant="glass" className="border-white/5 bg-white/[0.02] h-full p-5">
           <CardHeader className="pb-6 border-b border-white/5">
              <CardTitle className="text-xl flex items-center gap-2">
               <span className="w-8 h-8 rounded-lg bg-pink-500/10 flex items-center justify-center text-pink-500 text-sm">03</span>

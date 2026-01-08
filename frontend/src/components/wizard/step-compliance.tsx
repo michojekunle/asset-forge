@@ -68,7 +68,7 @@ export function StepCompliance({ formData, setFormData }: StepComplianceProps) {
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Left Col: Jurisdictions */}
         <div className="lg:col-span-2 space-y-6">
-           <Card variant="glass" className="border-white/5 bg-white/[0.02]">
+           <Card variant="glass" className="border-white/5 bg-white/[0.02] p-5">
             <CardHeader className="pb-6 border-b border-white/5">
               <CardTitle className="text-xl flex items-center gap-2">
                 <span className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500 text-sm">04</span>
@@ -101,7 +101,7 @@ export function StepCompliance({ formData, setFormData }: StepComplianceProps) {
             </CardContent>
           </Card>
 
-          <Card variant="glass" className="border-white/5 bg-white/[0.02]">
+          <Card variant="glass" className="border-white/5 bg-white/[0.02] p-5">
              <CardHeader className="pb-6 border-b border-white/5">
               <CardTitle className="text-xl flex items-center gap-2">
                 <span className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-500 text-sm">05</span>
@@ -122,7 +122,7 @@ export function StepCompliance({ formData, setFormData }: StepComplianceProps) {
 
         {/* Right Col: Controls */}
         <div className="space-y-6">
-          <Card variant="glass" className="border-white/5 bg-gradient-to-b from-white/[0.08] to-white/[0.02]">
+          <Card variant="glass" className="border-white/5 bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-5">
              <CardHeader className="pb-4">
               <CardTitle className="text-lg">Access Controls</CardTitle>
             </CardHeader>

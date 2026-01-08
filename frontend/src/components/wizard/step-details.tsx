@@ -149,7 +149,7 @@ export function StepDetails({ formData, setFormData }: StepDetailsProps) {
       </div>
 
       {/* Common Fields */}
-      <Card variant="glass" className="border-white/5 bg-white/[0.02]">
+      <Card variant="glass" className="border-white/5 bg-white/[0.02] p-5">
         <CardHeader className="pb-6 border-b border-white/5">
           <CardTitle className="text-xl flex items-center gap-2">
             <span className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500 text-sm">01</span>
