@@ -17,7 +17,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
           "rounded-2xl transition-all duration-300",
           {
             "bg-neutral-900": variant === "default",
-            "bg-neutral-900/80 backdrop-blur-sm": variant === "glass",
+            "bg-zinc-900/60 backdrop-blur-xl border border-white/5 shadow-2xl": variant === "glass",
             "bg-gradient-to-br from-neutral-900 to-neutral-800": variant === "gradient",
             "bg-neutral-900 ring-1 ring-neutral-800": variant === "glow",
           },

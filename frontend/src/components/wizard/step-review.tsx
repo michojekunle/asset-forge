@@ -150,7 +150,7 @@ export function StepReview({ formData }: StepReviewProps) {
 
       {/* Configuration Summary */}
       <div className="grid sm:grid-cols-2 gap-4">
-        <Card variant="default">
+        <Card variant="default" className="p-5">
           <CardHeader>
             <CardTitle className="text-base">Token Settings</CardTitle>
           </CardHeader>
@@ -162,7 +162,7 @@ export function StepReview({ formData }: StepReviewProps) {
           </CardContent>
         </Card>
 
-        <Card variant="default">
+        <Card variant="default" className="p-5">
           <CardHeader>
             <CardTitle className="text-base">Compliance</CardTitle>
           </CardHeader>

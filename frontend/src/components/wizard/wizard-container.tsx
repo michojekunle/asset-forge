@@ -4,7 +4,6 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { AssetFormData, initialFormData } from "@/types/asset";
 
@@ -55,123 +54,127 @@ export function WizardContainer({ children }: WizardContainerProps) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 py-16">
-      {/* Progress Header */}
-      <div className="mb-16">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Create New Asset</h1>
-            <p className="text-lg text-muted-foreground">
-              Step {currentStep + 1} of {steps.length}: {steps[currentStep].title}
-            </p>
-          </div>
-          <div className="text-right hidden sm:block">
-            <span className="text-sm text-muted-foreground block mb-1">Progress</span>
-            <div className="text-2xl font-bold">{Math.round(progress)}%</div>
-          </div>
-        </div>
-        <Progress value={progress} />
-      </div>
-
-      {/* Step Indicators */}
-      <div className="flex items-center justify-between mb-12 overflow-x-auto pb-4">
-        {steps.map((step, index) => (
-          <div
-            key={step.id}
-            className={cn(
-              "flex items-center min-w-max",
-              index < steps.length - 1 && "flex-1"
-            )}
-          >
-            <button
-              onClick={() => index < currentStep && setCurrentStep(index)}
-              disabled={index > currentStep}
-              className={cn(
-                "flex items-center gap-3 px-4 py-3 rounded-xl transition-colors",
-                index === currentStep && "bg-primary/10",
-                index < currentStep && "cursor-pointer hover:bg-muted",
-                index > currentStep && "opacity-50 cursor-not-allowed"
-              )}
-            >
-              <div
-                className={cn(
-                  "w-10 h-10 rounded-full flex items-center justify-center text-base font-semibold transition-colors",
-                  index < currentStep && "bg-success text-white",
-                  index === currentStep && "bg-primary text-black",
-                  index > currentStep && "bg-muted text-muted-foreground border border-border"
-                )}
-              >
-                {index < currentStep ? (
-                  <Check className="h-5 w-5" />
-                ) : (
-                  index + 1
-                )}
-              </div>
-              <div className="hidden md:block text-left">
-                <p className={cn(
-                  "text-base font-medium",
-                  index === currentStep ? "text-foreground" : "text-muted-foreground"
-                )}>
-                  {step.title}
-                </p>
-              </div>
-            </button>
-            {index < steps.length - 1 && (
-              <div className={cn(
-                "hidden md:block flex-1 h-0.5 mx-3",
-                index < currentStep ? "bg-success" : "bg-border"
-              )} />
-            )}
-          </div>
-        ))}
-      </div>
-
-      {/* Step Content */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentStep}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.2 }}
-          className="min-h-[400px]"
-        >
-          {children({
-            formData,
-            setFormData,
-            currentStep,
-            goToNextStep,
-            goToPrevStep,
-            isFirstStep,
-            isLastStep,
-          })}
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Navigation Buttons */}
-      <div className="flex items-center justify-between mt-12 pt-8 border-t border-border">
-        <Button
-          variant="secondary"
-          size="lg"
-          onClick={goToPrevStep}
-          disabled={isFirstStep}
-          className="px-8"
-        >
-          <ArrowLeft className="h-5 w-5 mr-2" />
-          Previous
-        </Button>
+    <div className="min-h-[calc(100vh-80px)] flex flex-col items-center justify-start pt-12 pb-20 px-4 sm:px-6">
+      {/* Centered Container */}
+      <div className="w-full max-w-5xl">
         
-        {!isLastStep && (
-          <Button
-            variant="primary"
-            size="lg"
-            onClick={goToNextStep}
-            className="px-8"
+        {/* Minimal Header */}
+        <div className="mb-12 text-center">
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center justify-center p-1.5 mb-6 rounded-full bg-white/5 border border-white/10 backdrop-blur-md"
           >
-            Next Step
-            <ArrowRight className="h-5 w-5 ml-2" />
+            <span className="px-3 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              Step {currentStep + 1} of {steps.length}
+            </span>
+            <span className="px-3 py-1 text-xs font-semibold text-white bg-white/10 rounded-full ml-1">
+              {steps[currentStep].title}
+            </span>
+          </motion.div>
+          
+          <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 mb-3 tracking-tight">
+            Create New Asset
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-lg mx-auto">
+            {steps[currentStep].description}
+          </p>
+        </div>
+
+        {/* Improved Step Indicators */}
+        <div className="relative flex items-center justify-between mb-16 max-w-3xl mx-auto">
+          {/* Connecting Line */}
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-[1px] bg-white/10 z-0" />
+          <div 
+            className="absolute left-0 top-1/2 -translate-y-1/2 h-[1px] bg-gradient-to-r from-emerald-500 to-emerald-400 z-0 transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          />
+
+          {steps.map((step, index) => {
+             const isCompleted = index < currentStep;
+             const isCurrent = index === currentStep;
+
+             return (
+              <div key={step.id} className="relative z-10 flex flex-col items-center group">
+                <button
+                  onClick={() => index < currentStep && setCurrentStep(index)}
+                  disabled={index > currentStep}
+                  className={cn(
+                    "w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300",
+                    isCompleted && "bg-emerald-500 border-emerald-500 text-black shadow-[0_0_20px_rgba(16,185,129,0.3)]",
+                    isCurrent && "bg-black border-emerald-500 text-emerald-500 scale-110 shadow-[0_0_20px_rgba(16,185,129,0.2)]",
+                    !isCompleted && !isCurrent && "bg-black/50 border-white/10 text-muted-foreground hover:border-white/30 backdrop-blur-sm"
+                  )}
+                >
+                  {isCompleted ? (
+                    <Check className="w-5 h-5" strokeWidth={3} />
+                  ) : (
+                    <span className="text-sm font-bold">{index + 1}</span>
+                  )}
+                </button>
+                
+                {/* Tooltip-style Label */}
+                <div className={cn(
+                  "absolute top-14 left-1/2 -translate-x-1/2 w max-w-[120px] text-center transition-all duration-300",
+                  isCurrent ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"
+                )}>
+                  <span className="text-xs font-medium text-emerald-400 uppercase tracking-widest">
+                    {step.title}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Content Area */}
+        <div className="mb-12">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentStep}
+              initial={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              exit={{ opacity: 0, scale: 1.02, filter: "blur(10px)" }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {children({
+                formData,
+                setFormData,
+                currentStep,
+                goToNextStep,
+                goToPrevStep,
+                isFirstStep,
+                isLastStep,
+              })}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Futuristic Navigation */}
+        <div className="flex items-center justify-between max-w-2xl mx-auto">
+          <Button
+            variant="ghost"
+            onClick={goToPrevStep}
+            disabled={isFirstStep}
+            className={cn(
+              "group text-muted-foreground hover:text-white hover:bg-white/5 transition-all",
+              isFirstStep && "invisible"
+            )}
+          >
+            <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+            Back
           </Button>
-        )}
+
+          {!isLastStep && (
+            <Button
+              onClick={goToNextStep}
+              className="bg-white text-black hover:bg-emerald-400 hover:text-black transition-all duration-300 rounded-full px-8 py-6 text-base font-bold shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_-5px_rgba(52,211,153,0.5)]"
+            >
+              Continue
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

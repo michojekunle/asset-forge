@@ -140,48 +140,56 @@ export function StepDetails({ formData, setFormData }: StepDetailsProps) {
   };
 
   return (
-    <div className="space-y-10">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4">Asset Details</h2>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-          Provide information about your asset. This metadata will be stored on-chain.
+    <div className="space-y-8">
+      <div className="text-center mb-10">
+        <h2 className="text-3xl font-bold mb-3 tracking-tight">Asset Specification</h2>
+        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          Define the core parameters and metadata for your on-chain asset.
         </p>
       </div>
 
       {/* Common Fields */}
-      <Card variant="glass" className="p-5">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-xl">Token Information</CardTitle>
+      <Card variant="glass" className="border-white/5 bg-white/[0.02]">
+        <CardHeader className="pb-6 border-b border-white/5">
+          <CardTitle className="text-xl flex items-center gap-2">
+            <span className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500 text-sm">01</span>
+            Token Information
+          </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid sm:grid-cols-2 gap-6">
+        <CardContent className="space-y-8 pt-8">
+          <div className="grid sm:grid-cols-2 gap-8">
             <Input
               label="Token Name"
-              placeholder="My Real Estate Token"
+              placeholder="e.g. Manhattan Luxury Apartment"
               value={formData.details.name}
               onChange={(e) => updateDetails("name", e.target.value)}
-              hint="Full name of your token"
+              hint="The display name for your asset token"
+              className="bg-black/20 border-white/10 focus:border-emerald-500/50"
             />
             <Input
               label="Token Symbol"
-              placeholder="MRT"
+              placeholder="MLA"
               value={formData.details.symbol}
               onChange={(e) => updateDetails("symbol", e.target.value.toUpperCase())}
-              hint="3-5 character ticker symbol"
+              hint="3-5 character identifier (e.g. PROP)"
+              className="bg-black/20 border-white/10 focus:border-emerald-500/50"
             />
           </div>
           <Textarea
             label="Description"
-            placeholder="Describe your asset, its value proposition, and any relevant details..."
+            placeholder="Provide a comprehensive description of the asset, its location, value proposition, and any other relevant details for investors..."
             value={formData.details.description}
             onChange={(e) => updateDetails("description", e.target.value)}
-            hint="This will be visible to potential investors"
+            hint="This will be permanently stored in the asset metadata"
+            className="min-h-[120px] bg-black/20 border-white/10 focus:border-emerald-500/50 resize-none"
           />
         </CardContent>
       </Card>
 
       {/* Asset-specific fields */}
-      {renderAssetSpecificFields()}
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
+        {renderAssetSpecificFields()}
+      </div>
     </div>
   );
 }
