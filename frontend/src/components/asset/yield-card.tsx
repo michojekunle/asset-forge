@@ -32,13 +32,13 @@ export function YieldCard({ tokenAddress, isOwner }: YieldCardProps) {
   };
 
   return (
-    <Card className="glass-card mt-6">
+    <Card className="glass-card mt-6 p-5">
       <CardHeader>
         <CardTitle className="text-xl font-semibold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
           Rental Yield
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 mt-3">
         <div className="p-4 rounded-lg bg-black/20 border border-white/10">
             <div className="text-sm text-gray-400 mb-1">Unclaimed Rewards</div>
             <div className="text-2xl font-bold text-white">

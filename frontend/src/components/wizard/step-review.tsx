@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useAccount, useChainId } from "wagmi";
+import { useAccount, useChainId, useSwitchChain } from "wagmi";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AssetFormData } from "@/types/asset";
-import { ASSET_TYPES, getMantleExplorerUrl, formatAddress } from "@/lib/utils";
+import { ASSET_TYPES, getMantleExplorerUrl, formatAddress, copyToClipboard } from "@/lib/utils";
 import { mantleSepolia } from "@/config/wagmi";
 import { useAssetFactory } from "@/hooks/useAssetFactory";
 import {
@@ -18,6 +18,7 @@ import {
   Copy,
   Loader2,
 } from "lucide-react";
+import { toast } from "sonner";
 
 interface StepReviewProps {
   formData: AssetFormData;
@@ -57,6 +58,11 @@ export function StepReview({ formData }: StepReviewProps) {
     }
   };
 
+  const handleCopyAddress = async (address: string) => {
+    await copyToClipboard(address);
+    toast.success("Address copied to clipboard");
+  };
+
   if (deployedAddress) {
     return (
       <div className="space-y-6">
@@ -77,7 +83,7 @@ export function StepReview({ formData }: StepReviewProps) {
               <div className="flex items-center gap-2">
                 <code className="text-sm font-mono">{formatAddress(deployedAddress, 8)}</code>
                 <button className="text-muted-foreground hover:text-foreground">
-                  <Copy className="h-4 w-4" />
+                  <Copy className="h-4 w-4" onClick={() => handleCopyAddress(deployedAddress)}/>
                 </button>
               </div>
             </div>
@@ -137,11 +143,11 @@ export function StepReview({ formData }: StepReviewProps) {
             <div className="text-3xl">{assetTypeInfo?.icon}</div>
             <div>
               <CardTitle>{formData.details.name || "Unnamed Asset"}</CardTitle>
-              <Badge variant="secondary">{formData.details.symbol || "---"}</Badge>
+              <Badge variant="secondary" className="px-3 py-1">{formData.details.symbol || "---"}</Badge>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 mt-3">
           {formData.details.description && (
             <p className="text-sm text-muted-foreground">{formData.details.description}</p>
           )}
@@ -154,7 +160,7 @@ export function StepReview({ formData }: StepReviewProps) {
           <CardHeader>
             <CardTitle className="text-base">Token Settings</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="space-y-2 mt-2">
             <SummaryRow label="Total Supply" value={formData.tokenomics.totalSupply} />
             <SummaryRow label="Decimals" value={formData.tokenomics.decimals.toString()} />
             <SummaryRow label="Mintable" value={formData.tokenomics.mintable ? "Yes" : "No"} />
@@ -166,7 +172,7 @@ export function StepReview({ formData }: StepReviewProps) {
           <CardHeader>
             <CardTitle className="text-base">Compliance</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="space-y-2 mt-2">
             <SummaryRow label="KYC Required" value={formData.compliance.kycRequired ? "Yes" : "No"} />
             <SummaryRow label="Accredited Only" value={formData.compliance.accreditedOnly ? "Yes" : "No"} />
             <SummaryRow 
@@ -189,6 +195,22 @@ export function StepReview({ formData }: StepReviewProps) {
               <p className="text-sm text-muted-foreground mb-4">
                 Connect your wallet to deploy this asset
               </p>
+              {/* Connect button is handled by Header, but user might be confused so we could add a hint */}
+            </div>
+          ) : !isTestnet ? (
+             <div className="text-center py-6">
+              <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4 border border-red-500/20">
+                <AlertCircle className="h-8 w-8 text-red-500" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Wrong Network</h3>
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                You are currently connected to an unsupported network. Please switch to Mantle Sepolia Testnet to proceed with deployment.
+              </p>
+              
+              <div className="flex justify-center">
+                 {/* Logic to switch network would ideally go here, using useSwitchChain */}
+                 <NetworkSwitcher /> 
+              </div>
             </div>
           ) : (
             <>
@@ -212,25 +234,27 @@ export function StepReview({ formData }: StepReviewProps) {
                 </div>
               )}
 
-              <Button
-                variant="primary"
-                size="xl"
-                className="w-full"
-                onClick={handleDeploy}
-                disabled={isDeploying}
-              >
-                {isDeploying ? (
-                  <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                    Deploying...
-                  </>
-                ) : (
-                  <>
-                    <Rocket className="h-5 w-5" />
-                    Deploy to {isTestnet ? "Testnet" : "Mainnet"}
-                  </>
-                )}
-              </Button>
+              <div className="flex items-center justify-center">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  className="w-full max-w-sm"
+                  onClick={handleDeploy}
+                  disabled={isDeploying}
+                  >
+                  {isDeploying ? (
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      Deploying...
+                    </>
+                  ) : (
+                    <>
+                      <Rocket className="h-5 w-5" />
+                      Deploy to {isTestnet ? "Testnet" : "Mainnet"}
+                    </>
+                  )}
+                </Button>
+              </div>
 
               <p className="text-xs text-muted-foreground text-center mt-3">
                 By deploying, you agree to the terms of service and confirm that all
@@ -244,11 +268,28 @@ export function StepReview({ formData }: StepReviewProps) {
   );
 }
 
+
 function SummaryRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between text-sm">
       <span className="text-muted-foreground">{label}</span>
       <span className="font-medium">{value}</span>
     </div>
+  );
+}
+
+
+function NetworkSwitcher() {
+  const { switchChain, isPending } = useSwitchChain();
+  
+  return (
+    <Button
+      variant="primary"
+      onClick={() => switchChain({ chainId: mantleSepolia.id })}
+      disabled={isPending}
+      isLoading={isPending}
+    >
+      Switch to Mantle Sepolia
+    </Button>
   );
 }

@@ -32,7 +32,13 @@ export function useAssetFactory(): UseAssetFactoryReturn {
   const deployToken = useCallback(
     async (formData: AssetFormData): Promise<DeploymentResult> => {
       if (!address || !walletClient || !publicClient || !chainId) {
+        console.log("Details invalid:", { address: !!address, walletClient: !!walletClient, publicClient: !!publicClient, chainId });
         throw new Error("Wallet not connected");
+      }
+
+      if (chainId !== 5003) {
+         console.warn(`Incorrect chain ID: ${chainId}. Expected 5003 (Mantle Sepolia).`);
+         throw new Error("Wrong network. Please switch to Mantle Sepolia.");
       }
 
       const factoryAddress = CONTRACT_ADDRESSES[chainId as keyof typeof CONTRACT_ADDRESSES]?.assetFactory;

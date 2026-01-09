@@ -1,38 +1,23 @@
 import { http, createConfig, cookieStorage, createStorage } from "wagmi";
 import { injected, walletConnect } from "wagmi/connectors";
+import { mantleSepoliaTestnet, sepolia } from "wagmi/chains";
 
-// Mantle Sepolia Testnet Chain Definition
+// Use official chain definition but ensure RPCs are robust
 export const mantleSepolia = {
-  id: 5003,
-  name: "Mantle Sepolia",
-  nativeCurrency: {
-    decimals: 18,
-    name: "MNT",
-    symbol: "MNT",
-  },
+  ...mantleSepoliaTestnet,
+  id: 5003, // Explicitly keep ID for type safety
   rpcUrls: {
-    default: {
-      http: ["https://rpc.sepolia.mantle.xyz"],
-    },
-    public: {
-      http: ["https://rpc.sepolia.mantle.xyz"],
-    },
+    default: { http: ["https://rpc.sepolia.mantle.xyz"] },
+    public: { http: ["https://rpc.sepolia.mantle.xyz"] },
   },
-  blockExplorers: {
-    default: {
-      name: "Mantle Explorer",
-      url: "https://sepolia.mantlescan.xyz",
-    },
-  },
-  testnet: true,
 } as const;
 
 // WalletConnect Project ID
-export const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "demo";
+export const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "c0f7300a0d9255289753c20058b7608a"; // Fallback demo ID
 
 // Wagmi Configuration
 export const wagmiConfig = createConfig({
-  chains: [mantleSepolia],
+  chains: [mantleSepolia, sepolia],
   connectors: [
     injected(),
     walletConnect({
@@ -48,6 +33,7 @@ export const wagmiConfig = createConfig({
   ],
   transports: {
     [mantleSepolia.id]: http(),
+    [sepolia.id]: http(),
   },
   ssr: true,
   storage: createStorage({

@@ -8,7 +8,7 @@ import { YieldCard } from '@/components/asset/yield-card';
 import { CompliancePanel } from '@/components/asset/compliance-panel';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Building2, FileText, Gavel, FileDigit } from 'lucide-react';
+import { ArrowLeft, Building2, FileText } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AssetDetailPage() {
@@ -65,11 +65,11 @@ export default function AssetDetailPage() {
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Main Info */}
-        <Card className="glass-card md:col-span-2">
+        <Card className="glass-card md:col-span-2 p-5">
           <CardHeader>
             <CardTitle className="text-lg text-gray-300">Asset Overview</CardTitle>
           </CardHeader>
-          <CardContent className="grid gap-4 sm:grid-cols-3">
+          <CardContent className="grid gap-4 sm:grid-cols-3 mt-2">
             <div className="p-4 rounded-lg bg-white/5">
               <div className="text-sm text-gray-500">Total Supply</div>
               <div className="text-xl font-mono text-white">
