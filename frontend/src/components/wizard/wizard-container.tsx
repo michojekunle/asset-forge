@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { AssetFormData, initialFormData } from "@/types/asset";
+import { toast } from "sonner";
 
 interface WizardStep {
   id: string;
@@ -33,6 +34,85 @@ interface WizardContainerProps {
   }) => React.ReactNode;
 }
 
+// Validation function for each step
+function validateStep(step: number, formData: AssetFormData): { isValid: boolean; errors: string[] } {
+  const errors: string[] = [];
+
+  switch (step) {
+    case 0: // Asset Type
+      if (!formData.assetType) {
+        errors.push("Please select an asset type");
+      }
+      break;
+
+    case 1: // Details
+      if (!formData.details.name || formData.details.name.trim().length < 2) {
+        errors.push("Token name is required (min 2 characters)");
+      }
+      if (!formData.details.symbol || formData.details.symbol.trim().length < 2) {
+        errors.push("Token symbol is required (min 2 characters)");
+      }
+      if (formData.details.symbol && formData.details.symbol.length > 8) {
+        errors.push("Token symbol must be 8 characters or less");
+      }
+      
+      // Asset-specific validations
+      if (formData.assetType === "real_estate") {
+        if (!formData.details.propertyAddress?.trim()) {
+          errors.push("Property address is required for real estate tokens");
+        }
+        if (!formData.details.appraisalValue || parseFloat(formData.details.appraisalValue) <= 0) {
+          errors.push("Appraisal value must be greater than 0");
+        }
+      }
+      if (formData.assetType === "bond") {
+        if (!formData.details.faceValue || parseFloat(formData.details.faceValue) <= 0) {
+          errors.push("Face value must be greater than 0");
+        }
+        if (!formData.details.interestRate || parseFloat(formData.details.interestRate) < 0) {
+          errors.push("Interest rate is required");
+        }
+        if (!formData.details.maturityDate) {
+          errors.push("Maturity date is required");
+        }
+      }
+      if (formData.assetType === "invoice") {
+        if (!formData.details.invoiceNumber?.trim()) {
+          errors.push("Invoice number is required");
+        }
+        if (!formData.details.invoiceAmount || parseFloat(formData.details.invoiceAmount) <= 0) {
+          errors.push("Invoice amount must be greater than 0");
+        }
+        if (!formData.details.debtor?.trim()) {
+          errors.push("Debtor name is required");
+        }
+      }
+      break;
+
+    case 2: // Tokenomics
+      if (!formData.tokenomics.totalSupply || parseFloat(formData.tokenomics.totalSupply) <= 0) {
+        errors.push("Total supply must be greater than 0");
+      }
+      if (parseFloat(formData.tokenomics.totalSupply) > 1_000_000_000_000) {
+        errors.push("Total supply cannot exceed 1 trillion tokens");
+      }
+      break;
+
+    case 3: // Compliance
+      // Compliance step has sensible defaults, no required validation
+      break;
+
+    case 4: // Review
+      // Final review, all previous steps should be validated
+      break;
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+}
+
 export function WizardContainer({ children }: WizardContainerProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<AssetFormData>(initialFormData);
@@ -43,6 +123,16 @@ export function WizardContainer({ children }: WizardContainerProps) {
 
   const goToNextStep = () => {
     if (!isLastStep) {
+      const { isValid, errors } = validateStep(currentStep, formData);
+      
+      if (!isValid) {
+        // Show first error as toast
+        toast.error("Please fix the following:", {
+          description: errors[0],
+        });
+        return;
+      }
+      
       setCurrentStep((prev) => prev + 1);
     }
   };

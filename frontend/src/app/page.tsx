@@ -18,6 +18,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ASSET_TYPES } from "@/lib/utils";
+import { useReadContract } from "wagmi";
+import { ASSET_FACTORY_ABI } from "@/contracts/abi";
+import { CONTRACT_ADDRESSES, mantleSepolia } from "@/config/wagmi";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 24 },
@@ -75,13 +78,6 @@ const assetTemplates = [
   },
 ];
 
-const stats = [
-  { value: "0", label: "Assets Created", suffix: "" },
-  { value: "<1", label: "Avg. Deploy Time", suffix: "min" },
-  { value: "Low", label: "Gas Costs", suffix: "" },
-  { value: "24/7", label: "Network Uptime", suffix: "" },
-];
-
 const steps = [
   { step: 1, title: "Connect Wallet", description: "Link your MetaMask or WalletConnect wallet" },
   { step: 2, title: "Choose Template", description: "Select from Real Estate, Bond, Invoice, or Custom" },
@@ -90,6 +86,25 @@ const steps = [
 ];
 
 export default function HomePage() {
+  // Fetch live asset count from the contract
+  const factoryAddress = CONTRACT_ADDRESSES[mantleSepolia.id]?.assetFactory as `0x${string}`;
+  
+  const { data: assetCount } = useReadContract({
+    address: factoryAddress,
+    abi: ASSET_FACTORY_ABI,
+    functionName: 'getAssetCount',
+    query: {
+      enabled: !!factoryAddress && factoryAddress !== '0x0000000000000000000000000000000000000000',
+    },
+  });
+
+  const stats = [
+    { value: assetCount !== undefined ? assetCount.toString() : "0", label: "Assets Created", suffix: "" },
+    { value: "<1", label: "Avg. Deploy Time", suffix: "min" },
+    { value: "Low", label: "Gas Costs", suffix: "" },
+    { value: "24/7", label: "Network Uptime", suffix: "" },
+  ];
+
   return (
     <div className="relative">
       {/* Hero Section */}
