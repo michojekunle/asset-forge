@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "@/components/layout/providers";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { CursorGlow } from "@/components/ui/cursor-glow";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -58,6 +59,7 @@ export default async function RootLayout({
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
         <Providers initialState={initialState}>
+          <CursorGlow />
           <div className="flex flex-col min-h-screen">
             <Header />
             <main className="flex-1 pt-24 lg:pt-28">

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAccount, useConnect, useDisconnect, useBalance, useChainId, useSwitchChain } from "wagmi";
 import { injected, walletConnect } from "wagmi/connectors";
@@ -72,9 +73,15 @@ export function Header() {
       <nav className="max-w-6xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 flex-shrink-0">
-            <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
-              <span className="text-xs font-bold text-black">AF</span>
+          <Link href="/" className="flex items-center gap-3 flex-shrink-0 group">
+            <div className="w-9 h-9 rounded-lg overflow-hidden bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 p-0.5 group-hover:from-emerald-500/30 group-hover:to-cyan-500/30 transition-all">
+              <Image
+                src="/logo.png"
+                alt="Asset Forge Logo"
+                width={36}
+                height={36}
+                className="w-full h-full object-contain"
+              />
             </div>
             <span className="text-sm font-semibold text-white hidden sm:block tracking-tight">Asset Forge</span>
           </Link>

@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { useUserAssets } from "@/hooks/useUserAssets";
 import { formatUnits } from "viem";
 import { mantleSepolia } from "@/config/wagmi";
+import { Loader } from "@/components/ui/loader";
 
 export default function DashboardPage() {
   const { isConnected } = useAccount();
@@ -188,7 +189,7 @@ export default function DashboardPage() {
         {/* Assets Grid */}
         {isLoading ? (
           <div className="flex justify-center py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-neutral-500" />
+            <Loader/>
           </div>
         ) : filteredAssets.length > 0 ? (
           <div

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -35,6 +36,64 @@ const staggerContainer = {
     },
   },
 };
+
+// Interactive letter component for the forge text
+function ForgeLetter({ letter }: { letter: string }) {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  return (
+    <motion.span
+      className="relative inline-block cursor-pointer text-white text-[6vw] md:text-[7vw] lg:text-[8vw] px-[0.5vw] md:px-[1vw]"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      animate={{
+        skewX: isHovered ? -6 : 0,
+        scale: isHovered ? 1.08 : 1,
+        color: isHovered ? '#10B981' : '#ffffff'
+      }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      whileHover={{ 
+        textShadow: "0 0 20px rgba(16, 185, 129, 0.4)",
+      }}
+    >
+      {letter}
+      {/* Hammer on hover - swings from handle, head strikes down */}
+      <motion.span
+        className="absolute left-1/2 pointer-events-none z-10"
+        style={{ 
+          top: "-0.8em",
+          fontSize: "0.5em",
+          transformOrigin: "bottom center",
+          marginLeft: "-0.25em",
+        }}
+        initial={{ opacity: 0, rotate: -45 }}
+        animate={{
+          opacity: isHovered ? 1 : 0,
+          rotate: isHovered ? [-45, 15, -45] : -45,
+        }}
+        transition={{ 
+          duration: 0.35, 
+          repeat: isHovered ? Infinity : 0,
+          ease: "easeInOut",
+        }}
+      >
+        🔨
+      </motion.span>
+      {/* Small spark on hit */}
+      {isHovered && (
+        <motion.span
+          className="absolute left-1/2 -translate-x-1/2 pointer-events-none"
+          style={{ top: "-0.2em", fontSize: "0.3em" }}
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: [0, 1, 0], scale: [0.3, 1, 0], y: [0, -15] }}
+          transition={{ duration: 0.3, repeat: Infinity, repeatDelay: 0.15 }}
+        >
+          ✨
+        </motion.span>
+      )}
+    </motion.span>
+  );
+}
 
 const features = [
   {
@@ -108,7 +167,45 @@ export default function HomePage() {
   return (
     <div className="relative">
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center pt-16">
+      <section className="relative min-h-[90vh] flex items-center pt-16 overflow-hidden">
+        {/* Animated Background Orbs */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Primary pulsing orb */}
+          <motion.div
+            className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-emerald-500/10 to-cyan-500/5 blur-3xl"
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.5, 0.3],
+            }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          />
+          {/* Secondary pulsing orb */}
+          <motion.div
+            className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-gradient-to-br from-cyan-500/10 to-emerald-500/5 blur-3xl"
+            animate={{
+              scale: [1.2, 1, 1.2],
+              opacity: [0.2, 0.4, 0.2],
+            }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          />
+          {/* Small floating particles */}
+          {[...Array(5)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-2 h-2 rounded-full bg-emerald-500/30"
+              style={{
+                top: `${20 + i * 15}%`,
+                left: `${10 + i * 20}%`,
+              }}
+              animate={{
+                y: [-20, 20, -20],
+                opacity: [0.3, 0.7, 0.3],
+              }}
+              transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }}
+            />
+          ))}
+        </div>
+
         <div className="relative w-full max-w-5xl mx-auto px-6 lg:px-8 py-24">
           <motion.div
             initial="initial"
@@ -197,7 +294,7 @@ export default function HomePage() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-5">
+          <div className="grid md:grid-cols-2 gap-6">
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
@@ -205,16 +302,22 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1, duration: 0.5 }}
+                whileHover={{ y: -4, scale: 1.01 }}
+                className="group"
               >
-                <Card variant="default" hover className="h-full p-7">
-                  <CardHeader className="p-0 pb-4">
-                    <div className="w-11 h-11 rounded-xl bg-neutral-800 flex items-center justify-center mb-4">
-                      <feature.icon className="h-5 w-5 text-neutral-400" />
-                    </div>
-                    <CardTitle className="text-base">{feature.title}</CardTitle>
+                <Card variant="default" className="h-full p-8 border border-white/5 hover:border-emerald-500/30 transition-all duration-300 hover:bg-gradient-to-br hover:from-emerald-500/5 hover:to-transparent">
+                  <CardHeader className="p-0 pb-5">
+                    <motion.div 
+                      className="w-14 h-14 rounded-2xl bg-gradient-to-br from-neutral-800 to-neutral-900 flex items-center justify-center mb-5 group-hover:from-emerald-500/20 group-hover:to-cyan-500/10 transition-all duration-300"
+                      whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      <feature.icon className="h-6 w-6 text-neutral-400 group-hover:text-emerald-400 transition-colors duration-300" />
+                    </motion.div>
+                    <CardTitle className="text-lg group-hover:text-emerald-50 transition-colors">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="p-0">
-                    <CardDescription>{feature.description}</CardDescription>
+                    <CardDescription className="text-base leading-relaxed">{feature.description}</CardDescription>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -378,6 +481,82 @@ export default function HomePage() {
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Button>
             </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Bold Asset Forge Branding Section */}
+      <section className="relative py-32 lg:py-48 overflow-hidden">
+        {/* Animated forge/ember background */}
+        <div className="absolute inset-0 pointer-events-none">
+          {/* Forge glow from bottom */}
+          <motion.div
+            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-t from-orange-500/20 via-emerald-500/10 to-transparent blur-3xl"
+            animate={{
+              opacity: [0.3, 0.6, 0.3],
+              scale: [1, 1.1, 1],
+            }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          />
+          {/* Floating sparks */}
+          {[...Array(8)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-1.5 h-1.5 rounded-full bg-orange-400"
+              style={{
+                bottom: '20%',
+                left: `${25 + i * 7}%`,
+              }}
+              animate={{
+                y: [0, -100 - i * 30, -200],
+                x: [0, (i % 2 === 0 ? 20 : -20), 0],
+                opacity: [0, 1, 0],
+                scale: [0, 1, 0],
+              }}
+              transition={{
+                duration: 2 + i * 0.3,
+                repeat: Infinity,
+                ease: "easeOut",
+                delay: i * 0.4,
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="relative w-full px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center"
+          >
+            {/* The Bold Asset Forge Text - Interactive */}
+            <div className="relative">
+              <h2 className="font-black tracking-wider mb-4 select-none flex flex-wrap justify-center">
+                <span className="inline-flex">
+                  {"ASSET".split("").map((letter, i) => (
+                    <ForgeLetter key={`asset-${i}`} letter={letter} />
+                  ))}
+                </span>
+                <span className="mx-[2vw] md:mx-[3vw]" />
+                <span className="inline-flex">
+                  {"FORGE".split("").map((letter, i) => (
+                    <ForgeLetter key={`forge-${i}`} letter={letter} />
+                  ))}
+                </span>
+              </h2>
+            </div>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="mt-8 text-lg text-neutral-400 max-w-md mx-auto"
+            >
+              Hover over the letters to forge your assets
+            </motion.p>
           </motion.div>
         </div>
       </section>

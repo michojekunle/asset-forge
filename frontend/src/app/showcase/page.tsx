@@ -3,90 +3,15 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Search, TrendingUp, Clock, Star, Filter } from "lucide-react";
+import { Search, TrendingUp, Clock, Star, Filter, RefreshCw, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Loader } from "@/components/ui/loader";
 import { AssetCard } from "@/components/dashboard/asset-card";
-import { DeployedAsset } from "@/types/asset";
+import { useAllAssets } from "@/hooks/useAllAssets";
 import { cn } from "@/lib/utils";
-
-// Mock community assets for showcase
-const showcaseAssets: DeployedAsset[] = [
-  {
-    address: "0x1111111111111111111111111111111111111111",
-    name: "Silicon Valley Office Complex",
-    symbol: "SVOC",
-    assetType: "real_estate",
-    totalSupply: "5000000",
-    decimals: 18,
-    owner: "0xcreator1",
-    deployedAt: Date.now() - 86400000 * 7,
-    txHash: "0x111",
-    chainId: 5003,
-  },
-  {
-    address: "0x2222222222222222222222222222222222222222",
-    name: "Green Energy Bond 2028",
-    symbol: "GEB28",
-    assetType: "bond",
-    totalSupply: "10000000",
-    decimals: 6,
-    owner: "0xcreator2",
-    deployedAt: Date.now() - 86400000 * 3,
-    txHash: "0x222",
-    chainId: 5003,
-  },
-  {
-    address: "0x3333333333333333333333333333333333333333",
-    name: "European Logistics Invoice",
-    symbol: "ELI",
-    assetType: "invoice",
-    totalSupply: "250000",
-    decimals: 18,
-    owner: "0xcreator3",
-    deployedAt: Date.now() - 86400000,
-    txHash: "0x333",
-    chainId: 5003,
-  },
-  {
-    address: "0x4444444444444444444444444444444444444444",
-    name: "Art Collection Token",
-    symbol: "ACT",
-    assetType: "custom",
-    totalSupply: "100",
-    decimals: 0,
-    owner: "0xcreator4",
-    deployedAt: Date.now() - 86400000 * 14,
-    txHash: "0x444",
-    chainId: 5003,
-  },
-  {
-    address: "0x5555555555555555555555555555555555555555",
-    name: "Miami Beach Condo",
-    symbol: "MBC",
-    assetType: "real_estate",
-    totalSupply: "2000000",
-    decimals: 18,
-    owner: "0xcreator5",
-    deployedAt: Date.now() - 86400000 * 10,
-    txHash: "0x555",
-    chainId: 5003,
-  },
-  {
-    address: "0x6666666666666666666666666666666666666666",
-    name: "Infrastructure Bond A",
-    symbol: "INFRA",
-    assetType: "bond",
-    totalSupply: "50000000",
-    decimals: 6,
-    owner: "0xcreator6",
-    deployedAt: Date.now() - 86400000 * 5,
-    txHash: "0x666",
-    chainId: 5003,
-  },
-];
 
 const sortOptions = [
   { id: "newest", label: "Newest", icon: Clock },
@@ -99,7 +24,9 @@ export default function ShowcasePage() {
   const [sortBy, setSortBy] = useState("newest");
   const [filterType, setFilterType] = useState<string | null>(null);
 
-  const filteredAssets = showcaseAssets.filter((asset) => {
+  const { assets, isLoading, refetch } = useAllAssets();
+
+  const filteredAssets = assets.filter((asset) => {
     const matchesSearch =
       asset.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       asset.symbol.toLowerCase().includes(searchQuery.toLowerCase());
@@ -107,9 +34,19 @@ export default function ShowcasePage() {
     return matchesSearch && matchesType;
   });
 
+  // Count unique owners for "Creators" stat
+  const uniqueCreators = new Set(assets.map(a => a.owner)).size;
+
   return (
     <div className="min-h-screen pt-24 pb-20">
-      <div className="max-w-6xl mx-auto px-6 lg:px-8">
+      {/* Background gradients */}
+      <div className="absolute inset-x-0 top-0 h-[600px] overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 via-transparent to-transparent" />
+        <div className="absolute top-40 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-60 right-1/4 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl" />
+      </div>
+
+      <div className="relative max-w-6xl mx-auto px-6 lg:px-8">
         {/* Hero */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -117,12 +54,15 @@ export default function ShowcasePage() {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <Badge variant="default" className="mb-6">Community Showcase</Badge>
+          <Badge variant="default" className="mb-6">
+            <Sparkles className="w-3 h-3 mr-1" />
+            Community Showcase
+          </Badge>
           <h1 className="text-4xl md:text-5xl font-semibold text-white mb-4 tracking-tight">
             Discover RWA Tokens
           </h1>
           <p className="text-lg text-neutral-400 max-w-lg mx-auto leading-relaxed">
-            Explore tokenized real-world assets created by the community.
+            Explore tokenized real-world assets created by the community on Mantle.
           </p>
         </motion.div>
 
@@ -134,12 +74,12 @@ export default function ShowcasePage() {
           className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16"
         >
           {[
-            { label: "Total Assets", value: showcaseAssets.length },
-            { label: "Creators", value: "12" },
-            { label: "Total Value", value: "$67.4M" },
-            { label: "This Week", value: "+4" },
+            { label: "Total Assets", value: assets.length.toString() },
+            { label: "Creators", value: uniqueCreators.toString() },
+            { label: "Network", value: "Mantle" },
+            { label: "Status", value: isLoading ? "Loading..." : "Live" },
           ].map((stat) => (
-            <div key={stat.label} className="bg-neutral-900 rounded-2xl p-6 text-center">
+            <div key={stat.label} className="bg-gradient-to-br from-white/[0.03] to-transparent border border-white/5 rounded-2xl p-6 text-center backdrop-blur-sm">
               <p className="text-2xl font-semibold text-white mb-1">{stat.value}</p>
               <p className="text-xs text-neutral-500 uppercase tracking-wide">{stat.label}</p>
             </div>
@@ -164,6 +104,18 @@ export default function ShowcasePage() {
             />
           </div>
 
+          {/* Refresh */}
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => refetch()}
+            disabled={isLoading}
+            className="border-white/10"
+          >
+            <RefreshCw className={cn("h-4 w-4 mr-2", isLoading && "animate-spin")} />
+            Refresh
+          </Button>
+
           {/* Sort */}
           <div className="flex items-center gap-2">
             {sortOptions.map((option) => (
@@ -173,7 +125,7 @@ export default function ShowcasePage() {
                 className={cn(
                   "flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all",
                   sortBy === option.id
-                    ? "bg-white text-black"
+                    ? "bg-gradient-to-r from-emerald-500 to-cyan-500 text-black"
                     : "bg-neutral-900 text-neutral-400 hover:text-white"
                 )}
               >
@@ -211,12 +163,29 @@ export default function ShowcasePage() {
         </motion.div>
 
         {/* Assets Grid */}
-        {filteredAssets.length > 0 ? (
+        {isLoading ? (
+          <div className="py-20">
+            <Loader size="lg" text="Loading assets from blockchain..." />
+          </div>
+        ) : filteredAssets.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredAssets.map((asset, index) => (
               <AssetCard key={asset.address} asset={asset} index={index} />
             ))}
           </div>
+        ) : assets.length === 0 ? (
+          <Card variant="default" className="text-center py-16 px-8">
+            <CardContent>
+              <div className="text-4xl mb-4">🌱</div>
+              <h3 className="text-lg font-semibold text-white mb-2">No assets yet</h3>
+              <p className="text-sm text-neutral-400 mb-6">
+                Be the first to create a tokenized asset on Mantle!
+              </p>
+              <Link href="/create">
+                <Button variant="primary">Create First Asset</Button>
+              </Link>
+            </CardContent>
+          </Card>
         ) : (
           <Card variant="default" className="text-center py-16 px-8">
             <CardContent>
@@ -237,7 +206,7 @@ export default function ShowcasePage() {
           transition={{ duration: 0.5 }}
           className="mt-20 text-center"
         >
-          <div className="bg-neutral-900 rounded-3xl py-16 px-8">
+          <div className="bg-gradient-to-br from-emerald-500/10 via-transparent to-cyan-500/10 border border-white/10 rounded-3xl py-16 px-8">
             <h2 className="text-2xl md:text-3xl font-semibold text-white mb-4 tracking-tight">
               Ready to Create Your Own Asset?
             </h2>
@@ -245,7 +214,7 @@ export default function ShowcasePage() {
               Join the community and launch your tokenized real-world asset on Mantle.
             </p>
             <Link href="/create">
-              <Button variant="primary" size="lg">
+              <Button variant="primary" size="lg" className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600">
                 Start Creating
               </Button>
             </Link>
