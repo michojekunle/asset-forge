@@ -81,7 +81,7 @@ asset-forge/
 
 - Node.js v18+
 - MetaMask or compatible wallet
-- Mantle Sepolia testnet MNT ([Get from faucet](https://www.mantle.xyz/faucet))
+- Mantle Sepolia testnet MNT ([Get from faucet](https://faucet.testnet.mantle.xyz))
 
 ### Installation
 
@@ -195,7 +195,5 @@ All contracts have comprehensive test coverage including:
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
 
 **Built with ❤️ for the Mantle Global Hackathon 2025**

@@ -3,7 +3,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Elegant Dark Design System - Inspired by Antigravity */
 :root {
   /* Core Colors - Premium Dark Palette */
   --muted: oklch(0.97 0 0);
