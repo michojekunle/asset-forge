@@ -12,7 +12,7 @@ This guide will walk you through setting up Asset Forge for development.
 ## Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/asset-forge.git
+git clone https://github.com/michojekunle/asset-forge.git
 cd asset-forge
 ```
 
