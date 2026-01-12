@@ -192,8 +192,33 @@ All contracts have comprehensive test coverage including:
 |----------|---------|
 | AssetFactory | `TBD - Run npm run deploy:sepolia` |
 
+## � Work in Progress
+
+Asset Forge is actively being developed. Here's where things stand:
+
+**What's Working:**
+- ✅ Smart contract templates using OpenZeppelin v5
+- ✅ Gas-efficient deployment via EIP-1167 clones
+- ✅ 5-step asset creation wizard
+- ✅ Basic compliance (whitelist, KYC flags)
+- ✅ Dashboard and asset management
+- ✅ Yield distribution for real estate tokens
+
+**What I'm Working On Next:**
+- 🔨 Role-based access control (Admin, Issuer, Compliance Officer)
+- � Real KYC integration with identity providers
+- 🔨 More comprehensive test coverage
+- 🔨 ERC-3643 compliance standard
+
+**Future Goals:**
+- Professional security audit
+- Legal wrapper templates
+- Secondary market support
+- Multi-token yield distribution
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 **Built with ❤️ for the Mantle Global Hackathon 2025**
+
