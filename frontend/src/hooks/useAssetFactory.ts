@@ -133,14 +133,20 @@ export function useAssetFactory(): UseAssetFactoryReturn {
 
         // Wait for transaction receipt
         const receipt = await publicClient.waitForTransactionReceipt({ hash: txHash });
-        
+
+        // Check if the transaction failed
+        if (receipt.status !== "success") {
+          console.error("Transaction failed:", receipt);
+          throw new Error(`Transaction failed with status: ${receipt.status}`);
+        }
+
         // Parse logs to find AssetDeployed event
         const logs = parseEventLogs({
           abi: ASSET_FACTORY_ABI,
           logs: receipt.logs,
           eventName: 'AssetDeployed',
         });
-        
+
         // The first AssetDeployed log contains the token address
         const deployedLog = logs[0];
         const tokenAddress = deployedLog?.args.assetAddress || receipt.contractAddress || "";

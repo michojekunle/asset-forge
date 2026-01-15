@@ -13,7 +13,9 @@ export const mantleSepolia = {
 } as const;
 
 // WalletConnect Project ID
-export const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "c0f7300a0d9255289753c20058b7608a"; // Fallback demo ID
+export const walletConnectProjectId =
+  process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ||
+  "c0f7300a0d9255289753c20058b7608a"; // Fallback demo ID
 
 // Wagmi Configuration
 export const wagmiConfig = createConfig({
@@ -28,7 +30,7 @@ export const wagmiConfig = createConfig({
         url: "https://asset-forge.vercel.app",
         icons: ["https://asset-forge.vercel.app/logo.png"],
       },
-      showQrModal: true, 
+      showQrModal: true,
     }),
   ],
   transports: {
@@ -44,7 +46,9 @@ export const wagmiConfig = createConfig({
 // Contract Addresses
 export const CONTRACT_ADDRESSES = {
   [mantleSepolia.id]: {
-    assetFactory: process.env.NEXT_PUBLIC_FACTORY_ADDRESS || "0x159C8d08C2aF10eB79a355Fd74b8170caABFDa30",
+    assetFactory:
+      process.env.NEXT_PUBLIC_FACTORY_ADDRESS ||
+      "0xf832497238eD5a37c5c21b91755e6AFB71810A40",
   },
 } as const;
 
@@ -52,5 +56,7 @@ export const DEFAULT_CHAIN = mantleSepolia;
 export const SUPPORTED_CHAIN_IDS = [mantleSepolia.id] as const;
 
 export function isSupportedChain(chainId: number): boolean {
-  return SUPPORTED_CHAIN_IDS.includes(chainId as typeof SUPPORTED_CHAIN_IDS[number]);
+  return SUPPORTED_CHAIN_IDS.includes(
+    chainId as (typeof SUPPORTED_CHAIN_IDS)[number]
+  );
 }

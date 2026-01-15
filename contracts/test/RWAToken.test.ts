@@ -19,18 +19,57 @@ describe("RWAToken", function () {
   beforeEach(async function () {
     [owner, addr1, addr2] = await ethers.getSigners();
 
+    // 1. Deploy Implementation
     const RWATokenFactory = await ethers.getContractFactory("RWAToken");
-    rwaToken = await RWATokenFactory.deploy();
-    await rwaToken.waitForDeployment();
-    await rwaToken.initialize(
+    const rwaImplementation = await RWATokenFactory.deploy();
+    await rwaImplementation.waitForDeployment();
+
+    // 2. Deploy Factory (simplest way to get a valid proxy/clone)
+    const AssetFactoryFactory = await ethers.getContractFactory("AssetFactory");
+    // We need valid addresses for other implementations too for the factory constructor,
+    // but for this specific test we might just pass the same one if it doesn't validate strictly
+    // or deploy mocks. To be safe, let's just deploy the one we need or minimal dupes.
+    // Actually simpler: Just use Clones library directly in a test helper or specific test contract?
+    // No, let's just use the AssetFactory as intended.
+
+    const RealEstateTokenFactory = await ethers.getContractFactory(
+      "RealEstateToken"
+    );
+    const reImpl = await RealEstateTokenFactory.deploy();
+
+    const BondTokenFactory = await ethers.getContractFactory("BondToken");
+    const bondImpl = await BondTokenFactory.deploy();
+
+    const InvoiceTokenFactory = await ethers.getContractFactory("InvoiceToken");
+    const invoiceImpl = await InvoiceTokenFactory.deploy();
+
+    const factory = await AssetFactoryFactory.deploy(
+      await rwaImplementation.getAddress(),
+      await reImpl.getAddress(),
+      await bondImpl.getAddress(),
+      await invoiceImpl.getAddress()
+    );
+    await factory.waitForDeployment();
+
+    // 3. Deploy via Factory
+    const tx = await factory.deployRWAToken(
       TOKEN_NAME,
       TOKEN_SYMBOL,
       DECIMALS,
       INITIAL_SUPPLY,
-      owner.address,
       ASSET_TYPE,
       DESCRIPTION
     );
+    const receipt = await tx.wait();
+
+    // Get thedeployed clone address from logs
+    // The event is AssetDeployed(address assetAddress, ...)
+    // we can also just query assetsByCreator
+    const assets = await factory.getAssetsByCreator(owner.address);
+    const cloneAddress = assets[0];
+
+    // 4. Attach RWAToken interface to clone address
+    rwaToken = RWATokenFactory.attach(cloneAddress) as RWAToken;
   });
 
   describe("Deployment", function () {
@@ -91,10 +130,12 @@ describe("RWAToken", function () {
     });
 
     it("Should allow burning tokens", async function () {
-        const burnAmount = ethers.parseEther("10");
-        // Owner burns their own tokens
-        await rwaToken.burn(burnAmount);
-        expect(await rwaToken.balanceOf(owner.address)).to.equal(INITIAL_SUPPLY - burnAmount);
+      const burnAmount = ethers.parseEther("10");
+      // Owner burns their own tokens
+      await rwaToken.burn(burnAmount);
+      expect(await rwaToken.balanceOf(owner.address)).to.equal(
+        INITIAL_SUPPLY - burnAmount
+      );
     });
   });
 
@@ -109,7 +150,7 @@ describe("RWAToken", function () {
 
       await rwaToken.unpause();
       expect(await rwaToken.paused()).to.equal(false);
-      
+
       await rwaToken.transfer(addr1.address, 100);
       expect(await rwaToken.balanceOf(addr1.address)).to.equal(100);
     });
@@ -122,18 +163,18 @@ describe("RWAToken", function () {
   });
 
   describe("Compliance Settings", function () {
-      it("Should allow owner to update compliance requirements", async function () {
-          await rwaToken.updateCompliance(true, true, true);
-          
-          const info = await rwaToken.getTokenInfo();
-          expect(info.kycRequired_).to.equal(true);
-          expect(info.accreditedOnly_).to.equal(true);
-      });
+    it("Should allow owner to update compliance requirements", async function () {
+      await rwaToken.updateCompliance(true, true, true);
 
-      it("Should allow owner to set legal document URI", async function () {
-          const uri = "https://example.com/legal.pdf";
-          await rwaToken.setLegalDocumentUri(uri);
-          expect(await rwaToken.legalDocumentUri()).to.equal(uri);
-      });
+      const info = await rwaToken.getTokenInfo();
+      expect(info.kycRequired_).to.equal(true);
+      expect(info.accreditedOnly_).to.equal(true);
+    });
+
+    it("Should allow owner to set legal document URI", async function () {
+      const uri = "https://example.com/legal.pdf";
+      await rwaToken.setLegalDocumentUri(uri);
+      expect(await rwaToken.legalDocumentUri()).to.equal(uri);
+    });
   });
 });

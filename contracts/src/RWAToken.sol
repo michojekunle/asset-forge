@@ -66,6 +66,26 @@ contract RWAToken is
         string memory assetType_,
         string memory description_
     ) public initializer {
+        __RWAToken_init(
+            name_,
+            symbol_,
+            decimals_,
+            initialSupply_,
+            owner_,
+            assetType_,
+            description_
+        );
+    }
+
+    function __RWAToken_init(
+        string memory name_,
+        string memory symbol_,
+        uint8 decimals_,
+        uint256 initialSupply_,
+        address owner_,
+        string memory assetType_,
+        string memory description_
+    ) internal onlyInitializing {
         __ERC20_init(name_, symbol_);
         __ERC20Burnable_init();
         __ERC20Pausable_init();

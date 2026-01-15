@@ -60,7 +60,8 @@ contract RealEstateToken is RWAToken {
         uint256 appraisalValue_
     ) public initializer {
         // Initialize parent contract
-        RWAToken.initialize(
+        // Initialize parent contract
+        __RWAToken_init(
             name_,
             symbol_,
             decimals_,

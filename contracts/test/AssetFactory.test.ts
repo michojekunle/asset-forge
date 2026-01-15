@@ -10,8 +10,34 @@ describe("AssetFactory", function () {
 
   beforeEach(async function () {
     [owner, addr1] = await ethers.getSigners();
+
+    // Deploy implementations
+    const RWATokenFactory = await ethers.getContractFactory("RWAToken");
+    const rwaImpl = await RWATokenFactory.deploy();
+    await rwaImpl.waitForDeployment();
+
+    const RealEstateTokenFactory = await ethers.getContractFactory(
+      "RealEstateToken"
+    );
+    const reImpl = await RealEstateTokenFactory.deploy();
+    await reImpl.waitForDeployment();
+
+    const BondTokenFactory = await ethers.getContractFactory("BondToken");
+    const bondImpl = await BondTokenFactory.deploy();
+    await bondImpl.waitForDeployment();
+
+    const InvoiceTokenFactory = await ethers.getContractFactory("InvoiceToken");
+    const invoiceImpl = await InvoiceTokenFactory.deploy();
+    await invoiceImpl.waitForDeployment();
+
+    // Deploy Factory
     const AssetFactoryFactory = await ethers.getContractFactory("AssetFactory");
-    factory = await AssetFactoryFactory.deploy();
+    factory = await AssetFactoryFactory.deploy(
+      await rwaImpl.getAddress(),
+      await reImpl.getAddress(),
+      await bondImpl.getAddress(),
+      await invoiceImpl.getAddress()
+    );
     await factory.waitForDeployment();
   });
 
@@ -25,13 +51,13 @@ describe("AssetFactory", function () {
         "art",
         "A piece of art"
       );
-      
+
       const receipt = await tx.wait();
       expect(await factory.getAssetCount()).to.equal(1);
-      
+
       const allAssets = await factory.getAllAssets();
       expect(allAssets.length).to.equal(1);
-      
+
       const userAssets = await factory.getAssetsByCreator(owner.address);
       expect(userAssets.length).to.equal(1);
       expect(userAssets[0]).to.equal(allAssets[0]);
@@ -47,7 +73,7 @@ describe("AssetFactory", function () {
         "Res",
         1000000
       );
-      
+
       expect(await factory.getAssetCount()).to.equal(1);
       const assets = await factory.getAllAssets();
       expect(await factory.getAssetType(assets[0])).to.equal("real_estate");
@@ -65,7 +91,7 @@ describe("AssetFactory", function () {
         maturity,
         2
       );
-      
+
       expect(await factory.getAssetCount()).to.equal(1);
       const assets = await factory.getAllAssets();
       expect(await factory.getAssetType(assets[0])).to.equal("bond");
@@ -84,7 +110,7 @@ describe("AssetFactory", function () {
         due,
         200
       );
-      
+
       expect(await factory.getAssetCount()).to.equal(1);
       const assets = await factory.getAllAssets();
       expect(await factory.getAssetType(assets[0])).to.equal("invoice");

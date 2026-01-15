@@ -34,7 +34,9 @@ export function StepDetails({ formData, setFormData }: StepDetailsProps) {
                 label="Property Address"
                 placeholder="123 Main Street, New York, NY 10001"
                 value={formData.details.propertyAddress || ""}
-                onChange={(e) => updateDetails("propertyAddress", e.target.value)}
+                onChange={(e) =>
+                  updateDetails("propertyAddress", e.target.value)
+                }
                 hint="Full physical address of the property"
               />
               <div className="grid sm:grid-cols-2 gap-6">
@@ -42,14 +44,18 @@ export function StepDetails({ formData, setFormData }: StepDetailsProps) {
                   label="Property Type"
                   placeholder="Residential, Commercial, Industrial..."
                   value={formData.details.propertyType || ""}
-                  onChange={(e) => updateDetails("propertyType", e.target.value)}
+                  onChange={(e) =>
+                    updateDetails("propertyType", e.target.value)
+                  }
                 />
                 <Input
                   label="Appraisal Value (USD)"
                   placeholder="1,000,000"
                   type="number"
                   value={formData.details.appraisalValue || ""}
-                  onChange={(e) => updateDetails("appraisalValue", e.target.value)}
+                  onChange={(e) =>
+                    updateDetails("appraisalValue", e.target.value)
+                  }
                 />
               </div>
             </CardContent>
@@ -78,7 +84,9 @@ export function StepDetails({ formData, setFormData }: StepDetailsProps) {
                   type="number"
                   step="0.1"
                   value={formData.details.interestRate || ""}
-                  onChange={(e) => updateDetails("interestRate", e.target.value)}
+                  onChange={(e) =>
+                    updateDetails("interestRate", e.target.value)
+                  }
                   hint="Annual coupon rate"
                 />
               </div>
@@ -105,14 +113,18 @@ export function StepDetails({ formData, setFormData }: StepDetailsProps) {
                   label="Invoice Number"
                   placeholder="INV-2026-001"
                   value={formData.details.invoiceNumber || ""}
-                  onChange={(e) => updateDetails("invoiceNumber", e.target.value)}
+                  onChange={(e) =>
+                    updateDetails("invoiceNumber", e.target.value)
+                  }
                 />
                 <Input
                   label="Invoice Amount (USD)"
                   placeholder="50,000"
                   type="number"
                   value={formData.details.invoiceAmount || ""}
-                  onChange={(e) => updateDetails("invoiceAmount", e.target.value)}
+                  onChange={(e) =>
+                    updateDetails("invoiceAmount", e.target.value)
+                  }
                 />
               </div>
               <div className="grid sm:grid-cols-2 gap-6">
@@ -134,6 +146,32 @@ export function StepDetails({ formData, setFormData }: StepDetailsProps) {
           </Card>
         );
 
+      case "custom":
+        return (
+          <Card variant="glass" className="mt-8 p-5">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl">
+                🛠️ Standard Configuration
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 p-5">
+              <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-200">
+                <h4 className="font-semibold mb-2 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  Flexible Asset Structure
+                </h4>
+                <p className="text-sm opacity-90 leading-relaxed">
+                  Custom tokens use the standard ERC-20 structure with enhanced
+                  metadata capabilities. All specific details for your asset
+                  should be included in the <strong>Description</strong> field
+                  above. You can define custom compliance rules in the next
+                  step.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
       default:
         return null;
     }
@@ -142,7 +180,9 @@ export function StepDetails({ formData, setFormData }: StepDetailsProps) {
   return (
     <div className="space-y-8">
       <div className="text-center mb-10">
-        <h2 className="text-3xl font-bold mb-3 tracking-tight">Asset Specification</h2>
+        <h2 className="text-3xl font-bold mb-3 tracking-tight">
+          Asset Specification
+        </h2>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
           Define the core parameters and metadata for your on-chain asset.
         </p>
@@ -152,7 +192,9 @@ export function StepDetails({ formData, setFormData }: StepDetailsProps) {
       <Card variant="glass" className="border-white/5 bg-white/[0.02] p-5">
         <CardHeader className="pb-6 border-b border-white/5">
           <CardTitle className="text-xl flex items-center gap-2">
-            <span className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500 text-sm">01</span>
+            <span className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500 text-sm">
+              01
+            </span>
             Token Information
           </CardTitle>
         </CardHeader>
@@ -170,7 +212,9 @@ export function StepDetails({ formData, setFormData }: StepDetailsProps) {
               label="Token Symbol"
               placeholder="MLA"
               value={formData.details.symbol}
-              onChange={(e) => updateDetails("symbol", e.target.value.toUpperCase())}
+              onChange={(e) =>
+                updateDetails("symbol", e.target.value.toUpperCase())
+              }
               hint="3-5 character identifier (e.g. PROP)"
               className="bg-black/20 border-white/10 focus:border-emerald-500/50"
             />
